@@ -1,19 +1,28 @@
 import DATA from './mock.json';
 import Candlestick, { CandleStickData } from './Candlestick';
 import { cache, Suspense, use } from 'react';
+import { getCompany } from '@/app/stocks/page';
+import { NotFound } from 'next/dist/client/components/error';
+import './page.css'
 
 const sdf = Intl.DateTimeFormat('en', { dateStyle: 'short' });
 
 const Page = function ({ params }: { params: { id: string } }) {
+  const company = use(cache(getCompany)(params.id));
   const data = use(cache(getData)());
 
+  if (!company) {
+    return <NotFound />;
+  }
+
   return (
-    <>
-      <h1>hi</h1>
+    <main className="company">
+      <h1 className="name">{company.longname}</h1>
+      <p className="description">{company.longbusinesssummary}</p>
       <Suspense
         fallback={
           <Candlestick
-            key='chart'
+            key="chart"
             className="w-full max-w-2xl m-auto aspect-video"
             loading
             data={[]}
@@ -21,13 +30,13 @@ const Page = function ({ params }: { params: { id: string } }) {
         }
       >
         <Candlestick
-          key='chart'
+          key="chart"
           className="w-full max-w-2xl m-auto aspect-video"
           loading={false}
           data={data}
         />
       </Suspense>
-    </>
+    </main>
   );
 };
 

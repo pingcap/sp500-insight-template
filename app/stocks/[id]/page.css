@@ -1,0 +1,11 @@
+.company {
+
+}
+
+.company .name {
+  @apply text-4xl mb-2 text-gray-600 font-bold;
+}
+
+.company .description {
+  @apply text-gray-500;
+}

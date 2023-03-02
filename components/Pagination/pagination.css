@@ -1,0 +1,12 @@
+.paginator {
+  @apply flex flex-wrap m-0 p-0 gap-1 select-none;
+}
+
+.paginator > li {
+  @apply flex items-center justify-center border border-gray-200 bg-gray-50 text-gray-500 px-1.5;
+  border-radius: 3px;
+}
+
+.paginator > li.active {
+  @apply font-bold pointer-events-none;
+}

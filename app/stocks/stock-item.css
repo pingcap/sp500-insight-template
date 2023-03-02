@@ -1,0 +1,18 @@
+.stock-item > a {
+  @apply flex py-2 w-full;
+}
+
+.stock-item:not(:first-of-type) {
+  @apply border-t border-gray-200;
+}
+
+.stock-item .symbol {
+  @apply block text-gray-600 text-xl font-bold;
+
+  min-width: 64px;
+}
+
+.stock-item .name {
+  @apply block text-gray-400;
+}
+

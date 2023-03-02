@@ -6,7 +6,7 @@ export interface ContainerProps extends HTMLAttributes<HTMLDivElement> {
 
 const Container = forwardRef<HTMLDivElement, ContainerProps>(({ className, ...props }, forwardRef) => {
   return (
-    <div ref={forwardRef} className={clsx('container m-auto', className)} {...props} />
+    <div ref={forwardRef} className={clsx('container m-auto px-2', className)} {...props} />
   );
 });
 
