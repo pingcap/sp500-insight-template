@@ -1,0 +1,9 @@
+.echarts-container {
+  position: relative;
+}
+
+.echarts-container > div {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
