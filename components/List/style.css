@@ -1,0 +1,42 @@
+.list-item {
+  @apply rounded-xl;
+}
+
+.list-item:not(.has-href), .list-item.has-href > a {
+  @apply flex items-center justify-between p-2 px-3.5;
+}
+
+.list-item .left {
+  @apply flex flex-col;
+}
+
+.list-item .left, .list-item .right {
+}
+
+.list-item .left .text {
+  @apply text-significant text-xl font-bold;
+}
+
+.list-item .left .description {
+  @apply text-primary;
+}
+
+.list-item .right {
+  @apply text-secondary;
+}
+
+.list-item:not(:first-of-type) {
+  @apply mt-4;
+}
+
+.list-item.has-href {
+  @apply transition-colors;
+}
+
+.list-item.has-href:hover {
+  @apply bg-secondary;
+}
+
+.list-item.has-href.active {
+  @apply bg-active pointer-events-none;
+}

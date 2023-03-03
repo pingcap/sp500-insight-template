@@ -1,7 +1,7 @@
 import { FC, HTMLAttributes } from 'react';
-import clsx from 'clsx';
-import StockItem, { StockData } from './StockItem';
-import './stocks.css';
+import StockItem from './StockItem';
+import { StockData } from './api';
+import List from '@/components/List';
 
 export interface StockListProps extends HTMLAttributes<HTMLUListElement> {
   data: StockData[];
@@ -9,11 +9,11 @@ export interface StockListProps extends HTMLAttributes<HTMLUListElement> {
 
 const Stocks: FC<StockListProps> = ({ className, data, ...props }) => {
   return (
-    <ul className={clsx('stocks', className)} {...props} >
+    <List {...props} >
       {data.map(stock => (
         <StockItem key={stock.symbol} data={stock} />
       ))}
-    </ul>
+    </List>
   );
 };
 

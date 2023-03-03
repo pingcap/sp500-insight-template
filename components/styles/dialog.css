@@ -1,0 +1,71 @@
+.dialog-overlay {
+  @apply fixed w-screen h-screen left-0 top-0 bg-opacity-40 bg-black z-10;
+}
+
+.dialog-overlay[data-state=open] {
+  animation: overlay-show 220ms ease-out;
+}
+
+.dialog-overlay[data-state=closed] {
+  animation: overlay-hide 320ms ease-in;
+}
+
+.dialog-content {
+  @apply fixed z-20 shadow-xl py-8 px-12 bg-primary rounded;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.dialog-content[data-state=open] {
+  animation: content-show 320ms ease-out;
+}
+
+.dialog-content[data-state=closed] {
+  animation: content-hide 220ms ease-in;
+}
+
+
+.dialog-title {
+  @apply mb-4;
+}
+
+@keyframes overlay-show {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes overlay-hide {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes content-show {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -44%) scale(0.93);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes content-hide {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, -44%) scale(0.93);
+  }
+}

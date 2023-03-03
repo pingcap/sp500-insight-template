@@ -3,9 +3,9 @@
 }
 
 .company .name {
-  @apply text-4xl mb-2 text-gray-600 font-bold;
+  @apply mb-2 text-significant;
 }
 
 .company .description {
-  @apply text-gray-500;
+  @apply text-primary;
 }

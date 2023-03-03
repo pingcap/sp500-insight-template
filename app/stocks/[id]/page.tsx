@@ -1,14 +1,14 @@
 import DATA from './mock.json';
 import Candlestick, { CandleStickData } from './Candlestick';
 import { cache, Suspense, use } from 'react';
-import { getCompany } from '@/app/stocks/page';
+import { getStock } from '@/app/stocks/api';
 import { NotFound } from 'next/dist/client/components/error';
 import './page.css'
 
 const sdf = Intl.DateTimeFormat('en', { dateStyle: 'short' });
 
 const Page = function ({ params }: { params: { id: string } }) {
-  const company = use(cache(getCompany)(params.id));
+  const company = use(cache(getStock)(params.id));
   const data = use(cache(getData)());
 
   if (!company) {

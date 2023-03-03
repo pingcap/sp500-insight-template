@@ -1,17 +1,6 @@
 import { FC } from 'react';
-import './stock-item.css';
-import Link from 'next/link';
-
-export type StockData = {
-  symbol: string
-  industry: string
-  shortname: string
-  sector: string
-  longname: string
-  weight: number
-  longbusinesssummary: string
-  exchange: string
-}
+import { StockData } from './api';
+import { ListItem } from '@/components/List';
 
 export interface StockItemProps {
   data: StockData;
@@ -19,18 +8,11 @@ export interface StockItemProps {
 
 const StockItem: FC<StockItemProps> = ({ data }) => {
   return (
-    <li className="stock-item">
-      <Link href={`/stocks/${data.symbol}`}>
-        <span className="left">
-          <span className="symbol">
-          {data.symbol}
-        </span>
-        <span className="name">
-          {data.longname}
-        </span>
-        </span>
-      </Link>
-    </li>
+    <ListItem
+      text={data.symbol}
+      description={data.longname}
+      href={`/stocks/${data.symbol}`}
+    />
   );
 };
 

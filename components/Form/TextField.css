@@ -1,0 +1,20 @@
+.text-field {
+  @apply inline-flex items-center gap-2 py-1 px-2;
+}
+
+.text-field > label {
+  @apply text-right text-primary;
+  min-width: 48px;
+}
+
+.text-field > input {
+  @apply border-b border-default text-significant outline-none text-lg py-1 px-2 transition-colors bg-transparent;
+}
+
+.text-field > input::placeholder {
+  @apply text-secondary;
+}
+
+.text-field > input:focus {
+  @apply border-primary;
+}

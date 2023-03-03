@@ -1,0 +1,12 @@
+form button[type=submit] {
+  @apply inline-block px-2 py-1 text-primary font-bold rounded transition-colors;
+}
+
+form button[type=submit]:hover, form button[type=submit]:focus {
+  @apply text-significant outline-none;
+}
+
+
+form button[type=submit]:focus {
+  @apply bg-active;
+}
