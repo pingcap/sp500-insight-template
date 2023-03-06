@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "cli:create-schema": "tsc ./cli/index.ts && node ./cli/index.js create-schema",
+    "cli:csv-to-db": "tsc ./cli/index.ts && node ./cli/index.js csv-to-db"
   },
   "dependencies": {
     "@heroicons/react": "^2.0.16",
@@ -17,11 +19,17 @@
     "@types/node": "18.14.2",
     "@types/react": "18.0.28",
     "@types/react-dom": "18.0.11",
+    "async": "^3.2.4",
     "clsx": "^1.2.1",
+    "commander": "^10.0.0",
+    "csv": "^6.2.7",
     "echarts": "^5.4.1",
     "eslint": "8.35.0",
     "eslint-config-next": "13.2.3",
+    "mysql2": "^2.3.3",
     "next": "13.2.3",
+    "pino": "^8.11.0",
+    "pino-pretty": "^9.4.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.43.3",
@@ -33,6 +41,7 @@
     "autoprefixer": "^10.4.13",
     "postcss": "^8.4.21",
     "sass": "^1.58.3",
-    "tailwindcss": "^3.2.7"
+    "tailwindcss": "^3.2.7",
+    "ts-node": "^10.9.1"
   }
 }

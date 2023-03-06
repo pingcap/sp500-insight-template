@@ -34,3 +34,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# IDE
+.idea
+.vscode
+
+# Build
+cli/**/*.js
+
+# Dataset
+data/**/*.csv
