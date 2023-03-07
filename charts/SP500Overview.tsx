@@ -27,8 +27,8 @@ const SP500Overview: FC = () => {
   }, [filteredData]);
 
   const diffPercent = useMemo(() => {
-    return Math.abs(diff / filteredData[filteredData.length - 1]?.['S&P500'] * 100).toFixed(2)
-  }, [diff, filteredData])
+    return Math.abs(diff / filteredData[filteredData.length - 1]?.['S&P500'] * 100).toFixed(2);
+  }, [diff, filteredData]);
 
   useOption(() => ({
     grid: {
@@ -110,14 +110,21 @@ const SP500Overview: FC = () => {
 
   return (
     <main className="pt-4">
-      <div className='flex flex-col'>
-        <span className='text-secondary'>
+      <div className="flex flex-col">
+        <span className="text-secondary">
           {dtf.format(today ?? new Date())}
         </span>
-        <span className={clsx(diff > 0 ? 'text-red-600' : 'text-green-600', 'text-3xl font-bold')}>
-          {diff > 0 ? '+' : ''}{diff.toFixed(2)}
-          <span className='text-xl font-normal ml-2'>
-            {diffPercent}%
+        <span>
+          <span className="text-significant text-5xl">
+            {data[0]?.['S&P500']}
+          </span>
+          <span className={clsx(diff > 0 ? 'text-red-600' : 'text-green-600', 'text-2xl px-2')}>
+            <span className={clsx(diff > 0 ? 'bg-red-600' : 'bg-green-600', 'bg-opacity-20 rounded-xl px-2 py-1 tex')}>
+              {diff > 0 ? '+' : '-'}{diffPercent}%
+            </span>
+            <span className='ml-2'>
+              {diff > 0 ? '+' : '-'}{Math.abs(diff).toFixed(2)}
+            </span>
           </span>
         </span>
       </div>
@@ -128,7 +135,6 @@ const SP500Overview: FC = () => {
         value={duration.name}
         onValueChange={value => {
           setDuration(DURATIONS.find(d => d.name === value) ?? DURATIONS[0]);
-          console.log(value);
         }}
         aria-label="Text alignment"
       >

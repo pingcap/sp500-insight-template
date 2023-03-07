@@ -30,7 +30,6 @@ const AddCollectionItem: FC<Toolbar.ToolbarButtonProps> = (props) => {
   const [open, setOpen] = useState(false);
 
   const handleSubmit = useRefCallback((data: { id: string, name: string }) => {
-    console.log(data);
     setOpen(false);
   });
 
