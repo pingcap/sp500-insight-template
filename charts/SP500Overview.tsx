@@ -15,7 +15,7 @@ const SP500Overview: FC = () => {
 
   const today = useMemo(() => {
     const d = getMaxDate(data);
-    return isFinite(d) ? d : (new Date()).getTime();
+    return isFinite(d) ? d : undefined;
   }, [data]);
 
   const filteredData = useMemo(() => {
@@ -112,7 +112,7 @@ const SP500Overview: FC = () => {
     <main className="pt-4">
       <div className="flex flex-col">
         <span className="text-secondary">
-          {dtf.format(today ?? new Date())}
+          {today ? dtf.format(today) : '--'}
         </span>
         <span>
           <span className="text-significant text-5xl">
@@ -144,7 +144,7 @@ const SP500Overview: FC = () => {
           </ToggleGroup.Item>
         ))}
       </ToggleGroup.Root>
-      <ECharts ref={ref} className="mt-4 w-full aspect-video" />
+      <ECharts ref={ref} className="mt-4 w-full aspect-[20/9]" />
     </main>
   );
 };
