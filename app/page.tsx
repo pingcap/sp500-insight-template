@@ -12,7 +12,6 @@ export default function Home () {
         </h2>
         <SP500Overview />
       </section>
-      <hr />
       <section className="mt-8">
         <h2 className="my-4">
           Sectors

@@ -119,7 +119,7 @@ const SP500Overview: FC = () => {
             <span className={clsx(diff > 0 ? 'bg-red-600' : 'bg-green-600', 'bg-opacity-20 rounded-xl px-2 py-1 tex')}>
               {diff > 0 ? '+' : '-'}{diffPercent}%
             </span>
-            <span className='ml-2'>
+            <span className="ml-2">
               {diff > 0 ? '+' : '-'}{Math.abs(diff).toFixed(2)}
             </span>
           </span>
@@ -181,32 +181,40 @@ const recent = (days: number) => {
   };
 };
 
-const DURATIONS: Duration[] = [{
-  name: '1D',
-  filter: recent(1),
-}, {
-  name: '5D',
-  filter: recent(5),
-}, {
-  name: '1M',
-  filter: recent(30),
-}, {
-  name: '6M',
-  filter: recent(180),
-}, {
-  name: 'YTD',
-  filter: item => {
-    return (new Date(item.Date)).getUTCFullYear() === (new Date()).getUTCFullYear();
+const DURATIONS: Duration[] = [
+  // {
+  //   name: '1D',
+  //   filter: recent(1),
+  // },
+  // {
+  //   name: '5D',
+  //   filter: recent(5),
+  // },
+  // {
+  //   name: '1M',
+  //   filter: recent(30),
+  // },
+  {
+    name: '6M',
+    filter: recent(180),
   },
-}, {
-  name: '1Y',
-  filter: recent(365),
-}, {
-  name: '5Y',
-  filter: recent(365 * 5),
-}, {
-  name: 'MAX',
-  filter: () => true,
-}];
+  {
+    name: 'YTD',
+    filter: item => {
+      return (new Date(item.Date)).getUTCFullYear() === (new Date()).getUTCFullYear();
+    },
+  },
+  {
+    name: '1Y',
+    filter: recent(365),
+  },
+  {
+    name: '5Y',
+    filter: recent(365 * 5),
+  },
+  {
+    name: 'MAX',
+    filter: () => true,
+  }];
 
 const dtf = new Intl.DateTimeFormat('en', { dateStyle: 'long', timeStyle: 'long' });
