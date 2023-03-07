@@ -23,11 +23,11 @@ const SP500Overview: FC = () => {
   }, [data, duration]);
 
   const diff = useMemo(() => {
-    return filteredData[0]['S&P500'] - filteredData[filteredData.length - 1]['S&P500'];
+    return filteredData[0]?.['S&P500'] - filteredData[filteredData.length - 1]?.['S&P500'];
   }, [filteredData]);
 
   const diffPercent = useMemo(() => {
-    return Math.abs(diff / filteredData[filteredData.length - 1]['S&P500'] * 100).toFixed(2)
+    return Math.abs(diff / filteredData[filteredData.length - 1]?.['S&P500'] * 100).toFixed(2)
   }, [diff, filteredData])
 
   useOption(() => ({
