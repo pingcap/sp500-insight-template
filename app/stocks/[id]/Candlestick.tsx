@@ -1,6 +1,7 @@
 'use client';
 import ECharts, { EChartsProps, useECharts } from '@/components/ECharts';
 import { CallbackDataParams } from 'echarts/types/dist/shared';
+import { graphic } from 'echarts';
 
 export interface CandleStickData {
   [key: string]: any;
@@ -25,7 +26,11 @@ const CandleStick = ({ loading = false, data, ...props }: CandleStickProps) => {
     grid: {},
     tooltip: {
       trigger: 'axis',
-      formatter: (([k, line]: CallbackDataParams[]) => {
+      axisPointer: {
+        type: 'cross',
+      },
+      formatter: (([line]: CallbackDataParams[]) => {
+        const k = line;
         const lv = line.value as CandleStickData;
         const kv = k.value as CandleStickData;
 
@@ -46,26 +51,59 @@ const CandleStick = ({ loading = false, data, ...props }: CandleStickProps) => {
         showMinLabel: false,
         showMaxLabel: false,
       },
+      splitLine: {
+        show: false,
+      }
     },
-    series: [{
+    series: {
       type: 'candlestick',
+      large: true,
       encode: {
         x: 'Date',
         y: ['open', 'close', 'low', 'high'],
       },
       datasetId: 'data',
-    }, {
-      type: 'line',
-      encode: {
-        x: 'date',
-        y: 'adjClose',
+
+    },
+    dataZoom: {
+      borderColor: 'transparent',
+      backgroundColor: 'transparent',
+      fillerColor: 'transparent',
+      handleStyle: {
+        color: '#8C181820',
+        borderWidth: 0,
       },
-      symbolSize: 0,
-      lineStyle: {
-        width: 1,
+      moveHandleStyle: {
+        color: '#8C181820',
       },
-    }],
-    dataZoom: {},
+      brushStyle: {
+        color: '#DC2E2E80'
+      },
+      dataBackground: {
+        lineStyle: {
+          color: '#888',
+        },
+        areaStyle: {
+          color: '#33333380'
+        }
+      },
+      selectedDataBackground: {
+        lineStyle: {
+          color: '#DC2E2E',
+        },
+        areaStyle: {
+          color: '#DC2E2E80',
+        }
+      },
+      emphasis: {
+        moveHandleStyle: {
+          color: '#DC2E2E80'
+        },
+        handleStyle: {
+          color: '#DC2E2E80',
+        },
+      },
+    },
   }));
 
   useOption(() => ({

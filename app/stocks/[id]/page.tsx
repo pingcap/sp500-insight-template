@@ -16,14 +16,13 @@ const Page = function ({ params }: { params: { id: string } }) {
   }
 
   return (
-    <main className="company">
+    <main className="company container">
       <h1 className="name">{company.longname}</h1>
-      <p className="description">{company.longbusinesssummary}</p>
       <Suspense
         fallback={
           <Candlestick
             key="chart"
-            className="w-full max-w-2xl m-auto aspect-video"
+            className="w-full m-auto aspect-[20/5]"
             loading
             data={[]}
           />
@@ -31,11 +30,12 @@ const Page = function ({ params }: { params: { id: string } }) {
       >
         <Candlestick
           key="chart"
-          className="w-full max-w-2xl m-auto aspect-video"
+          className="w-full m-auto aspect-[20/5]"
           loading={false}
           data={data}
         />
       </Suspense>
+      <p className="description">{company.longbusinesssummary}</p>
     </main>
   );
 };
