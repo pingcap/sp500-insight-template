@@ -5,6 +5,7 @@ specifiers:
   '@radix-ui/react-dialog': ^1.0.2
   '@radix-ui/react-label': ^2.0.0
   '@radix-ui/react-portal': ^1.0.1
+  '@radix-ui/react-toggle-group': ^1.0.2
   '@radix-ui/react-toolbar': ^1.0.2
   '@types/node': 18.14.2
   '@types/react': 18.0.28
@@ -36,6 +37,7 @@ dependencies:
   '@radix-ui/react-dialog': 1.0.2_zula6vjvt3wdocc4mwcxqa6nzi
   '@radix-ui/react-label': 2.0.0_biqbaboplfbrettd7655fr4n2y
   '@radix-ui/react-portal': 1.0.1_biqbaboplfbrettd7655fr4n2y
+  '@radix-ui/react-toggle-group': 1.0.2_biqbaboplfbrettd7655fr4n2y
   '@radix-ui/react-toolbar': 1.0.2_biqbaboplfbrettd7655fr4n2y
   '@types/node': 18.14.2
   '@types/react': 18.0.28
