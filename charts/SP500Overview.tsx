@@ -110,10 +110,7 @@ const SP500Overview: FC = () => {
 
   return (
     <main className="pt-4">
-      <div className="flex flex-col">
-        <span className="text-secondary">
-          {today ? dtf.format(today) : '--'}
-        </span>
+      <div className="flex flex-col mb-4">
         <span>
           <span className="text-significant text-5xl">
             {data[0]?.['S&P500']}
@@ -127,6 +124,9 @@ const SP500Overview: FC = () => {
             </span>
           </span>
         </span>
+        <span className="text-secondary mt-4">
+          {today ? dtf.format(today) : '--'}
+        </span>
       </div>
       <ToggleGroup.Root
         className="flex gap-4 mt-4 mb-2"
@@ -136,7 +136,7 @@ const SP500Overview: FC = () => {
         onValueChange={value => {
           setDuration(DURATIONS.find(d => d.name === value) ?? DURATIONS[0]);
         }}
-        aria-label="Text alignment"
+        aria-label="Duration"
       >
         {DURATIONS.map(({ name }) => (
           <ToggleGroup.Item className="toggle-item" key={name} value={name} aria-label={name}>
