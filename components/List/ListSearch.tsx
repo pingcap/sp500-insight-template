@@ -1,3 +1,4 @@
+'use client';
 import { ChangeEvent, FC } from 'react';
 import { useRefCallback } from '@/utils/hook';
 import SearchIcon from '@heroicons/react/20/solid/MagnifyingGlassIcon';

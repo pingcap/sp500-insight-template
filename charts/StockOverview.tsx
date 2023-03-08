@@ -4,6 +4,7 @@ import ECharts, { useECharts } from '@/components/ECharts';
 import { CallbackDataParams } from 'echarts/types/dist/shared';
 import useSWR from 'swr';
 
+// TODO: rename prop
 const StockOverview: FC<{ index: string }> = ({ index }) => {
   const { ref, useLoading, useOption } = useECharts();
 

@@ -46,7 +46,7 @@ FROM index_companies ic
 LEFT JOIN companies_latest_price clp ON ic.stock_symbol = clp.stock_symbol
 `;
 
-const getUserSelectedStocks = async (userId: number) => {
+export const getUserSelectedStocks = async (userId: number) => {
   const queryStart = DateTime.now();
   const [rows] = await conn.query<any[]>(querySQL, [userId]);
   const queryEnd = DateTime.now();
