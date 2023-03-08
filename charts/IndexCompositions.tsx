@@ -1,41 +1,54 @@
 'use client';
-import { FC } from 'react';
+import { FC, useMemo, useState } from 'react';
 import useSWR from 'swr';
 import clsx from 'clsx';
 import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/20/solid';
-import Link from 'next/link';
 import Scrollable from '@/components/Scrollable';
+import List, { ListItem, ListSearch } from '@/components/List';
 
 const IndexCompositions: FC<{ index: string }> = ({ index }) => {
+  const [search, setSearch] = useState('');
   const { data = [] } = useSWR([index, 'compositions'], compositions);
 
-  return (
-    <Scrollable className="h-[400px]">
-      <ol>
-        {data.map(item => (
-          <li key={item.stock_symbol} className="mt-4 first-of-type:mt-0">
-            <Link className="flex items-center py-2 px-4 rounded-lg transition-colors hover:bg-secondary outline-none focus:bg-secondary" href={`/stocks/${item.stock_symbol}`}>
-                <span className="flex flex-col">
-                  <span className="text-significant">
-                    {item.stock_symbol}
-                    <span className="text-secondary ml-2 text-sm">{item.exchange_symbol}</span>
-                  </span>
-                  <span className="text-primary">{item.short_name}</span>
-                </span>
+  const filteredData = useMemo(() => {
+    return data.filter(item =>
+      item.stock_symbol.toLowerCase().indexOf(search) !== -1
+      || item.short_name.toLowerCase().indexOf(search) !== -1,
+    );
+  }, [search, data]);
 
-              <span className="flex-1">
+  return (
+    <>
+      <ListSearch value={search} onChange={setSearch} className='my-2' />
+      <Scrollable className="h-[400px]">
+        <List>
+          {filteredData.map(item => (
+            <ListItem
+              key={item.stock_symbol} className="mt-4 first-of-type:mt-0" href={`/stocks/${item.stock_symbol}`}
+              text={(
+                <>
+                  {item.stock_symbol}
+                  <span className="text-secondary ml-2 text-sm">
+                  {item.exchange_symbol}
                 </span>
-              <span className="flex flex-col text-right">
-                  <span className="text-significant text-2xl">{item.last_close_price.toFixed(2)}</span>
-                  <span>
-                    <PercentTag value={item.last_change_percentage} />
-                  </span>
+                </>
+              )}
+              description={item.short_name}
+              detail={(
+                <span className="flex flex-col text-right">
+                <span className="text-significant text-2xl">
+                  {item.last_close_price.toFixed(2)}
                 </span>
-            </Link>
-          </li>
-        ))}
-      </ol>
-    </Scrollable>
+                <span>
+                  <PercentTag value={item.last_change_percentage} />
+                </span>
+              </span>
+              )}
+            />
+          ))}
+        </List>
+      </Scrollable>
+    </>
   );
 };
 

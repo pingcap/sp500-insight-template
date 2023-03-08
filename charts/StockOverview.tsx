@@ -2,7 +2,6 @@
 import { FC } from 'react';
 import ECharts, { useECharts } from '@/components/ECharts';
 import { CallbackDataParams } from 'echarts/types/dist/shared';
-import { CandleStickData } from '@/app/stocks/[id]/Candlestick';
 import useSWR from 'swr';
 
 const StockOverview: FC<{ index: string }> = ({ index }) => {
@@ -19,8 +18,8 @@ const StockOverview: FC<{ index: string }> = ({ index }) => {
       },
       formatter: (([line]: CallbackDataParams[]) => {
         const k = line;
-        const lv = line.value as CandleStickData;
-        const kv = k.value as CandleStickData;
+        const lv = line.value as StockPriceData;
+        const kv = k.value as StockPriceData;
 
         const num = lv.adj_close?.toFixed(2);
         const pos = kv.close > kv.open;
