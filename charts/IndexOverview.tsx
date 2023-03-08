@@ -7,28 +7,38 @@ import { graphic } from 'echarts';
 import * as ToggleGroup from '@radix-ui/react-toggle-group';
 import './common.css';
 import clsx from 'clsx';
+import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/20/solid';
 
-const SP500Overview: FC = () => {
+const IndexOverview: FC<{ index: string }> = ({ index }) => {
   const [duration, setDuration] = useState(DURATIONS[0]);
-  const { data = [] } = useSWR('sp500overview', fetchData);
+
+  const { data: priceHistoryRecords = [] } = useSWR([index, 'priceHistory'], priceHistory);
+  const { data: latestPriceRecord } = useSWR([index, 'latestPrice'], latestPrice);
   const { ref, useOption } = useECharts();
 
-  const today = useMemo(() => {
-    const d = getMaxDate(data);
-    return isFinite(d) ? d : undefined;
-  }, [data]);
+  const today = latestPriceRecord?.last_updated_at ? new Date(latestPriceRecord.last_updated_at) : '--';
 
   const filteredData = useMemo(() => {
-    return data.filter(duration.filter);
-  }, [data, duration]);
+    return priceHistoryRecords.filter(duration.filter);
+  }, [priceHistoryRecords, duration]);
 
-  const diff = useMemo(() => {
-    return filteredData[0]?.['S&P500'] - filteredData[filteredData.length - 1]?.['S&P500'];
-  }, [filteredData]);
-
-  const diffPercent = useMemo(() => {
-    return Math.abs(diff / filteredData[filteredData.length - 1]?.['S&P500'] * 100).toFixed(2);
-  }, [diff, filteredData]);
+  const { diff, diffPercent, increased } = useMemo(() => {
+    const first = priceHistoryRecords[priceHistoryRecords.length - 1];
+    const last = priceHistoryRecords[0];
+    if (first && last) {
+      return {
+        diff: Math.abs(last.price - first.price).toFixed(2),
+        diffPercent: (Math.abs(last.price - first.price) / last.price * 100).toFixed(2),
+        increased: last.price >= first.price,
+      };
+    } else {
+      return {
+        diff: '--',
+        diffPercent: '--',
+        increased: true,
+      };
+    }
+  }, [priceHistoryRecords]);
 
   useOption(() => ({
     grid: {
@@ -70,8 +80,8 @@ const SP500Overview: FC = () => {
     series: {
       type: 'line',
       encode: {
-        x: 'Date',
-        y: 'S&P500',
+        x: 'record_date',
+        y: 'price',
       },
       smooth: true,
       sampling: 'lttb',
@@ -90,12 +100,12 @@ const SP500Overview: FC = () => {
 
   useOption(() => ({
     series: {
-      color: diff >= 0 ? '#DC2E2E' : '#3ed326',
+      color: increased ? '#DC2E2E' : '#3ed326',
       areaStyle: {
         color: new graphic.LinearGradient(0, 0, 0, 1, [
           {
             offset: 0.3,
-            color: diff >= 0 ? '#8C181880' : '#28881780',
+            color: increased ? '#8C181880' : '#28881780',
           },
           {
             offset: 1,
@@ -113,19 +123,19 @@ const SP500Overview: FC = () => {
       <div className="flex flex-col mb-4">
         <span>
           <span className="text-significant text-5xl">
-            {data[0]?.['S&P500']}
+            {priceHistoryRecords[0]?.['price']}
           </span>
-          <span className={clsx(diff > 0 ? 'text-red-600' : 'text-green-600', 'text-2xl px-2')}>
-            <span className={clsx(diff > 0 ? 'bg-red-600' : 'bg-green-600', 'bg-opacity-20 rounded-xl px-2 py-1 tex')}>
-              {diff > 0 ? '+' : '-'}{diffPercent}%
+          <span className={clsx(increased ? 'text-red-600' : 'text-green-600', 'text-2xl px-2')}>
+            <span className={clsx(increased ? 'bg-red-600' : 'bg-green-600', 'bg-opacity-20 rounded-xl px-2 py-1 tex')}>
+              {increased ? <ArrowUpIcon className="inline-block h-6 align-text-bottom" /> : <ArrowDownIcon className="inline-block h-6 align-text-bottom" />}{diffPercent}%
             </span>
             <span className="ml-2">
-              {diff > 0 ? '+' : '-'}{Math.abs(diff).toFixed(2)}
+              {increased ? '+' : '-'}{diff}
             </span>
           </span>
         </span>
         <span className="text-secondary mt-4">
-          {today ? dtf.format(today) : '--'}
+          {today !== '--' ? dtf.format(today) : '--'}
         </span>
       </div>
       <ToggleGroup.Root
@@ -149,20 +159,55 @@ const SP500Overview: FC = () => {
   );
 };
 
-export default SP500Overview;
+export default IndexOverview;
 
-const fetchData = async () => {
-  return import('./SP500Overview.json').then(d => d.default);
+type IndexHistoryPriceRecord = {
+  record_date: string
+  price: number
+}
+type IndexLatestPrice = {
+  last_updated_at: string
+  last_1st_price: number
+  last_2nd_price: number
+  last_changes: number
+}
+
+const priceHistory = async ([index]: [string]): Promise<IndexHistoryPriceRecord[]> => {
+  const resp = await fetch(`/api/indexes/${index}/price_history`);
+  const { rows } = await resp.json();
+  return rows.map(({ record_date, price }: any) => ({
+    record_date,
+    price: parseFloat(price),
+  }));
 };
+
+const latestPrice = async ([index]: [string]): Promise<IndexLatestPrice> => {
+  const resp = await fetch(`/api/indexes/${index}/latest_price`);
+  const {
+    rows: [{
+      last_updated_at,
+      last_1st_price,
+      last_2nd_price,
+      last_changes,
+    }],
+  } = await resp.json();
+  return {
+    last_updated_at,
+    last_1st_price: parseFloat(last_1st_price),
+    last_2nd_price: parseFloat(last_2nd_price),
+    last_changes: parseFloat(last_changes),
+  };
+};
+
 
 interface Duration {
   name: string;
-  filter: (item: any, index: number, list: any[]) => boolean;
+  filter: (item: IndexHistoryPriceRecord, index: number, list: IndexHistoryPriceRecord[]) => boolean;
 }
 
-function getMaxDate (list: any): number {
+function getMaxDate (list: IndexHistoryPriceRecord[] & { _maxDate?: number }): number {
   if (!list._maxDate) {
-    list._maxDate = Math.max(...list.map((d: any) => new Date(d.Date)));
+    list._maxDate = Math.max(...list.map((d) => (new Date(d.record_date)).getTime()));
   }
   return list._maxDate;
 }
@@ -176,8 +221,8 @@ function time (any: any): number {
 }
 
 const recent = (days: number) => {
-  return (item: any, index: number, list: any[]) => {
-    return time(item.Date) >= sub(getMaxDate(list), days);
+  return (item: IndexHistoryPriceRecord, index: number, list: IndexHistoryPriceRecord[]) => {
+    return time(item.record_date) >= sub(getMaxDate(list), days);
   };
 };
 
@@ -201,7 +246,7 @@ const DURATIONS: Duration[] = [
   {
     name: 'YTD',
     filter: item => {
-      return (new Date(item.Date)).getUTCFullYear() === (new Date()).getUTCFullYear();
+      return (new Date(item.record_date)).getUTCFullYear() === (new Date()).getUTCFullYear();
     },
   },
   {

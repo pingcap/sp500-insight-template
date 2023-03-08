@@ -1,10 +1,13 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@geo-maps/countries-land-10km': ^0.6.0
   '@heroicons/react': ^2.0.16
   '@radix-ui/react-dialog': ^1.0.2
   '@radix-ui/react-label': ^2.0.0
   '@radix-ui/react-portal': ^1.0.1
+  '@radix-ui/react-scroll-area': ^1.0.2
+  '@radix-ui/react-tabs': ^1.0.2
   '@radix-ui/react-toggle-group': ^1.0.2
   '@radix-ui/react-toolbar': ^1.0.2
   '@types/luxon': ^3.2.0
@@ -16,6 +19,7 @@ specifiers:
   cardinal: ^2.1.1
   clsx: ^1.2.1
   commander: ^10.0.0
+  country-code-lookup: ^0.0.22
   csv: ^6.2.7
   echarts: ^5.4.1
   eslint: 8.35.0
@@ -36,16 +40,20 @@ specifiers:
   typescript: 4.9.5
 
 dependencies:
+  '@geo-maps/countries-land-10km': 0.6.0
   '@heroicons/react': 2.0.16_react@18.2.0
   '@radix-ui/react-dialog': 1.0.2_zula6vjvt3wdocc4mwcxqa6nzi
   '@radix-ui/react-label': 2.0.0_biqbaboplfbrettd7655fr4n2y
   '@radix-ui/react-portal': 1.0.1_biqbaboplfbrettd7655fr4n2y
+  '@radix-ui/react-scroll-area': 1.0.2_biqbaboplfbrettd7655fr4n2y
+  '@radix-ui/react-tabs': 1.0.2_biqbaboplfbrettd7655fr4n2y
   '@radix-ui/react-toggle-group': 1.0.2_biqbaboplfbrettd7655fr4n2y
   '@radix-ui/react-toolbar': 1.0.2_biqbaboplfbrettd7655fr4n2y
   '@types/react-dom': 18.0.11
   async: 3.2.4
   clsx: 1.2.1
   commander: 10.0.0
+  country-code-lookup: 0.0.22
   csv: 6.2.8
   echarts: 5.4.1
   eslint: 8.35.0
@@ -108,6 +116,10 @@ packages:
   /@eslint/js/8.35.0:
     resolution: {integrity: sha512-JXdzbRiWclLVoD8sNUjR443VVlYqiYmDVT6rGUEIEHU5YJW0gaVZwV2xgM7D4arkvASqD0IlLUVjHiFuxaftRw==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    dev: false
+
+  /@geo-maps/countries-land-10km/0.6.0:
+    resolution: {integrity: sha512-zeqaQCfAp1eNxEN0jp/3dDW/MkGxApD1eGHyIQ6u0R5BwJMMssX5YNzAmmFBl22p6KZ7ySsHK3OzvIq49zMufg==}
     dev: false
 
   /@heroicons/react/2.0.16_react@18.2.0:
@@ -311,6 +323,12 @@ packages:
       tslib: 2.5.0
     dev: false
 
+  /@radix-ui/number/1.0.0:
+    resolution: {integrity: sha512-Ofwh/1HX69ZfJRiRBMTy7rgjAzHmwe4kW9C9Y99HTRUcYLUuVT0KESFj15rPjRgKJs20GPq8Bm5aEDJ8DuA3vA==}
+    dependencies:
+      '@babel/runtime': 7.21.0
+    dev: false
+
   /@radix-ui/primitive/1.0.0:
     resolution: {integrity: sha512-3e7rn8FDMin4CgeL7Z/49smCA3rFYY3Ha2rUQ7HRWFadS5iCRw08ZgVT1LaNTCNqgvrUiyczLflrVrF0SRQtNA==}
     dependencies:
@@ -504,6 +522,26 @@ packages:
       react-dom: 18.2.0_react@18.2.0
     dev: false
 
+  /@radix-ui/react-scroll-area/1.0.2_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-k8VseTxI26kcKJaX0HPwkvlNBPTs56JRdYzcZ/vzrNUkDlvXBy8sMc7WvCpYzZkHgb+hd72VW9MqkqecGtuNgg==}
+    peerDependencies:
+      react: ^16.8 || ^17.0 || ^18.0
+      react-dom: ^16.8 || ^17.0 || ^18.0
+    dependencies:
+      '@babel/runtime': 7.21.0
+      '@radix-ui/number': 1.0.0
+      '@radix-ui/primitive': 1.0.0
+      '@radix-ui/react-compose-refs': 1.0.0_react@18.2.0
+      '@radix-ui/react-context': 1.0.0_react@18.2.0
+      '@radix-ui/react-direction': 1.0.0_react@18.2.0
+      '@radix-ui/react-presence': 1.0.0_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-primitive': 1.0.1_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-use-callback-ref': 1.0.0_react@18.2.0
+      '@radix-ui/react-use-layout-effect': 1.0.0_react@18.2.0
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    dev: false
+
   /@radix-ui/react-separator/1.0.1_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-uc6Izot0D8uVz6T2nSb/HI7OaxkeaD50GgKr3W6HORnbfGVrG7LWuy+g6Fd58n8wHbrRblSYJZEfcjgymMlJjw==}
     peerDependencies:
@@ -524,6 +562,25 @@ packages:
       '@babel/runtime': 7.21.0
       '@radix-ui/react-compose-refs': 1.0.0_react@18.2.0
       react: 18.2.0
+    dev: false
+
+  /@radix-ui/react-tabs/1.0.2_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-gOUwh+HbjCuL0UCo8kZ+kdUEG8QtpdO4sMQduJ34ZEz0r4922g9REOBM+vIsfwtGxSug4Yb1msJMJYN2Bk8TpQ==}
+    peerDependencies:
+      react: ^16.8 || ^17.0 || ^18.0
+      react-dom: ^16.8 || ^17.0 || ^18.0
+    dependencies:
+      '@babel/runtime': 7.21.0
+      '@radix-ui/primitive': 1.0.0
+      '@radix-ui/react-context': 1.0.0_react@18.2.0
+      '@radix-ui/react-direction': 1.0.0_react@18.2.0
+      '@radix-ui/react-id': 1.0.0_react@18.2.0
+      '@radix-ui/react-presence': 1.0.0_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-primitive': 1.0.1_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-roving-focus': 1.0.2_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-use-controllable-state': 1.0.0_react@18.2.0
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
     dev: false
 
   /@radix-ui/react-toggle-group/1.0.2_biqbaboplfbrettd7655fr4n2y:
@@ -1062,6 +1119,10 @@ packages:
 
   /concat-map/0.0.1:
     resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
+    dev: false
+
+  /country-code-lookup/0.0.22:
+    resolution: {integrity: sha512-MAeQDq6i7/lSKB6lp20HWrlL5bIVNfWyQQJ/FmRac6VNBj+cTgyMv8D+pauV/GMpcgSLD5ODYb3RcRD1OvtCYA==}
     dev: false
 
   /create-require/1.1.1:
