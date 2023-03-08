@@ -10,8 +10,6 @@ const IndustryDistribution: FC = () => {
   const { data = [] } = useSWR('companies', loadData);
   const [sector, setSector] = useState<Tree>();
 
-  console.log(sector)
-
   useEffect(() => {
     setSector(data[0]);
   }, [data]);

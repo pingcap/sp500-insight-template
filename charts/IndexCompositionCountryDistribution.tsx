@@ -12,8 +12,6 @@ const IndexCompositionCountryDistribution: FC<GeoDistributionProps> = ({ index }
   const { ref, useOption } = useECharts();
   const { data = [] } = useSWR([index, 'countryDistribution'], fetchData);
 
-  console.log(data);
-
   useOption(() => ({
     legend: {},
     tooltip: {},
