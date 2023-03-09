@@ -1,4 +1,4 @@
-import { StockItem, UnresolvedStockItem } from '@/charts/Stock';
+import { StockItem, UnresolvedStockItem } from './Stock';
 import { PlusIcon } from '@heroicons/react/20/solid';
 
 interface StockOverlayProps {

@@ -1,7 +1,7 @@
 'use client';
 import { forwardRef, ReactElement } from 'react';
 import * as ContextMenu from '@radix-ui/react-context-menu';
-import { StockItem, UnresolvedStockItem } from '@/charts/Stock';
+import { StockItem, UnresolvedStockItem } from './Stock';
 import '@/components/styles/context-menu.css';
 
 export interface StockContextMenuProps {

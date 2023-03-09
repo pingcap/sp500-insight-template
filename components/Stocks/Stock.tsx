@@ -21,6 +21,9 @@ export interface StockItem extends UnresolvedStockItem {
   last_change_percentage: number;
 }
 
+export type AnyStockItem = StockItem | UnresolvedStockItem;
+
+
 interface StockProps extends Omit<ListItemProps, 'text' | 'description' | 'detail' | 'href'> {
   stock: StockItem | UnresolvedStockItem;
   href?: string;

@@ -3,12 +3,14 @@ import { EChartsType, init } from 'echarts';
 import { forwardRef, HTMLAttributes, useEffect, useRef } from 'react';
 import './echarts.css';
 import clsx from 'clsx';
+import Overlay from '@/components/ECharts/Overlay';
 
 export interface EChartsProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'contentEditable'> {
   theme?: string;
+  loading?: boolean;
 }
 
-const ECharts = forwardRef<EChartsType | undefined, EChartsProps>((({ theme, className, ...props }, forwardedRef) => {
+const ECharts = forwardRef<EChartsType | undefined, EChartsProps>((({ theme, className, loading = false, ...props }, forwardedRef) => {
   const celRef = useRef<HTMLDivElement>(null);
   const elRef = useRef<HTMLDivElement>(null);
   const ecRef = useRef<EChartsType>();
@@ -51,6 +53,9 @@ const ECharts = forwardRef<EChartsType | undefined, EChartsProps>((({ theme, cla
   return (
     <div className={clsx('echarts-container', className)} ref={celRef} {...props}>
       <div ref={elRef} />
+      <Overlay show={loading}>
+        Loading...
+      </Overlay>
     </div>
   );
 }));

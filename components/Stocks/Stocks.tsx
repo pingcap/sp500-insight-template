@@ -1,14 +1,12 @@
 'use client';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import List, { ListSearch } from '@/components/List';
-import Stock, { StockItem, UnresolvedStockItem } from './Stock';
-import StockContextMenu from '@/charts/StockMenu';
-import StockOverlay from '@/charts/StockOverlay';
+import Stock, { AnyStockItem } from './Stock';
+import StockContextMenu from './StockMenu';
+import StockOverlay from './StockOverlay';
 import useSWR from 'swr';
 import { compositions } from '@/charts/IndexCompositions';
 import Scrollable from '@/components/Scrollable';
-
-type AnyStockItem = StockItem | UnresolvedStockItem;
 
 export interface StocksProps {
   stocks: AnyStockItem[];

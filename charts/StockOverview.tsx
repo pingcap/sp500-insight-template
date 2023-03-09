@@ -6,7 +6,7 @@ import useSWR from 'swr';
 
 // TODO: rename prop
 const StockOverview: FC<{ index: string }> = ({ index }) => {
-  const { ref, useLoading, useOption } = useECharts();
+  const { ref, useOption } = useECharts();
 
   const { data = [], isValidating } = useSWR([index, 'stock'], fetchData);
 
@@ -101,10 +101,8 @@ const StockOverview: FC<{ index: string }> = ({ index }) => {
     },
   }), [data]);
 
-  useLoading(isValidating);
-
   return (
-    <ECharts ref={ref} className="aspect-[20/5]" />
+    <ECharts ref={ref} className="aspect-[20/5]" loading={isValidating} />
   );
 };
 

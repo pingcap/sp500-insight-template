@@ -1,5 +1,5 @@
 import { PropsWithChildren, use } from 'react';
-import Stocks from '@/charts/Stocks';
+import Stocks from '@/components/Stocks';
 import { fetchUserSelectedStocks } from '@/app/optional/data';
 
 const Layout = ({ children }: PropsWithChildren) => {

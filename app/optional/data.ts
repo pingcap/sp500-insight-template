@@ -1,5 +1,5 @@
 import { cache } from 'react';
-import { StockItem } from '@/charts/Stock';
+import { StockItem } from '@/components/Stocks';
 import { getUserSelectedStocks } from '@/app/api/user/selected_stocks/route';
 
 export const fetchUserSelectedStocks = cache(async (userId: number): Promise<StockItem[]> => {

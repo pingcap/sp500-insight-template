@@ -6,15 +6,6 @@ export function useECharts () {
 
   return {
     ref,
-    useLoading (loading: boolean) {
-      useEffect(() => {
-        if (loading) {
-          ref.current?.showLoading();
-        } else {
-          ref.current?.hideLoading();
-        }
-      }, [loading]);
-    },
     useOption<T> (getOption: () => EChartsOption, opts?: SetOptionOpts | DependencyList, deps?: DependencyList) {
       useEffect(
         () => {

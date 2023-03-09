@@ -1,6 +1,6 @@
 'use client';
 
-import { FC, useMemo, useState } from 'react';
+import { FC, useMemo } from 'react';
 import useSWR from 'swr';
 import ECharts, { useECharts } from '@/components/ECharts';
 import { graphic } from 'echarts';
@@ -8,19 +8,19 @@ import * as ToggleGroup from '@radix-ui/react-toggle-group';
 import './common.css';
 import clsx from 'clsx';
 import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/20/solid';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 const IndexOverview: FC<{ index: string }> = ({ index }) => {
-  const [duration, setDuration] = useState(DURATIONS[0]);
+  const pathname = usePathname();
+  const sp = useSearchParams();
+  const router = useRouter();
+  const duration = sp.get('duration') ?? '6M';
 
-  const { data: priceHistoryRecords = [] } = useSWR([index, 'priceHistory'], priceHistory);
+  const { data: priceHistoryRecords = [], isLoading: priceHistoryLoading } = useSWR([index, duration, 'priceHistory'], { fetcher: priceHistory, keepPreviousData: true });
   const { data: latestPriceRecord } = useSWR([index, 'latestPrice'], latestPrice);
   const { ref, useOption } = useECharts();
 
   const today = latestPriceRecord?.last_updated_at ? new Date(latestPriceRecord.last_updated_at) : '--';
-
-  const filteredData = useMemo(() => {
-    return priceHistoryRecords.filter(duration.filter);
-  }, [priceHistoryRecords, duration]);
 
   const { diff, diffPercent, increased } = useMemo(() => {
     const first = priceHistoryRecords[priceHistoryRecords.length - 1];
@@ -114,9 +114,9 @@ const IndexOverview: FC<{ index: string }> = ({ index }) => {
       },
     },
     dataset: {
-      source: filteredData,
+      source: priceHistoryRecords,
     },
-  }), [filteredData]);
+  }), [priceHistoryRecords]);
 
   return (
     <main className="pt-4">
@@ -142,9 +142,9 @@ const IndexOverview: FC<{ index: string }> = ({ index }) => {
         className="flex gap-4 mt-4 mb-2"
         type="single"
         defaultValue="center"
-        value={duration.name}
+        value={String(duration)}
         onValueChange={value => {
-          setDuration(DURATIONS.find(d => d.name === value) ?? DURATIONS[0]);
+          router.replace(`${pathname}?duration=${value}`);
         }}
         aria-label="Duration"
       >
@@ -154,7 +154,7 @@ const IndexOverview: FC<{ index: string }> = ({ index }) => {
           </ToggleGroup.Item>
         ))}
       </ToggleGroup.Root>
-      <ECharts ref={ref} className="mt-4 w-full aspect-[20/9]" />
+      <ECharts ref={ref} className="mt-4 w-full aspect-[20/9]" loading={priceHistoryLoading} />
     </main>
   );
 };
@@ -172,8 +172,8 @@ type IndexLatestPrice = {
   last_changes: number
 }
 
-const priceHistory = async ([index]: [string]): Promise<IndexHistoryPriceRecord[]> => {
-  const resp = await fetch(`/api/indexes/${index}/price_history`);
+const priceHistory = async ([index, duration]: [string, string]): Promise<IndexHistoryPriceRecord[]> => {
+  const resp = await fetch(`/api/indexes/${index}/price_history?duration=${duration}`);
   const { rows } = await resp.json();
   return rows.map(({ record_date, price }: any) => ({
     record_date,
@@ -199,67 +199,25 @@ const latestPrice = async ([index]: [string]): Promise<IndexLatestPrice> => {
   };
 };
 
-
 interface Duration {
   name: string;
-  filter: (item: IndexHistoryPriceRecord, index: number, list: IndexHistoryPriceRecord[]) => boolean;
 }
-
-function getMaxDate (list: IndexHistoryPriceRecord[] & { _maxDate?: number }): number {
-  if (!list._maxDate) {
-    list._maxDate = Math.max(...list.map((d) => (new Date(d.record_date)).getTime()));
-  }
-  return list._maxDate;
-}
-
-function sub (date: number, days: number) {
-  return date - 24 * 60 * 60 * 1000 * days;
-}
-
-function time (any: any): number {
-  return (new Date(any)).getTime();
-}
-
-const recent = (days: number) => {
-  return (item: IndexHistoryPriceRecord, index: number, list: IndexHistoryPriceRecord[]) => {
-    return time(item.record_date) >= sub(getMaxDate(list), days);
-  };
-};
 
 const DURATIONS: Duration[] = [
-  // {
-  //   name: '1D',
-  //   filter: recent(1),
-  // },
-  // {
-  //   name: '5D',
-  //   filter: recent(5),
-  // },
-  // {
-  //   name: '1M',
-  //   filter: recent(30),
-  // },
   {
     name: '6M',
-    filter: recent(180),
   },
   {
     name: 'YTD',
-    filter: item => {
-      return (new Date(item.record_date)).getUTCFullYear() === (new Date()).getUTCFullYear();
-    },
   },
   {
     name: '1Y',
-    filter: recent(365),
   },
   {
     name: '5Y',
-    filter: recent(365 * 5),
   },
   {
     name: 'MAX',
-    filter: () => true,
   }];
 
 const dtf = new Intl.DateTimeFormat('en', { dateStyle: 'long', timeStyle: 'long' });
