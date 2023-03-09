@@ -9,7 +9,7 @@ export interface ScrollableProps extends ScrollAreaProps {
 const Scrollable: FC<ScrollableProps> = ({ children, className, ...props }) => {
   return (
     <ScrollArea.Root className={clsx('overflow-hidden', className)} {...props}>
-      <ScrollArea.Viewport className="w-full h-full">
+      <ScrollArea.Viewport className="w-full h-full pr-2">
         {children}
       </ScrollArea.Viewport>
       <ScrollArea.Scrollbar

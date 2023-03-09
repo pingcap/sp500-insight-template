@@ -33,10 +33,14 @@
   @apply transition-colors;
 }
 
-.list-item.has-href:hover {
+.list-item.has-href:hover:not(.has-overlay) {
   @apply bg-secondary;
 }
 
-.list-item.has-href.active {
+.list-item.has-href.active:not(.has-overlay) {
   @apply bg-active pointer-events-none;
+}
+
+.list-item.has-overlay > :not(.overlay) {
+  @apply pointer-events-none;
 }

@@ -85,7 +85,8 @@ const insertUserSelectedStocks = async (userId: number, stockSymbol: string) => 
   }
 }
 
-export async function POST(req: Request, { body }: any) {
+export async function POST(req: Request) {
+  const body = await req.json()
   const { stockSymbol } = body;
   const result = await insertUserSelectedStocks(1, stockSymbol);
   return NextResponse.json(result);
@@ -109,7 +110,8 @@ const deleteUserSelectedStocks = async (userId: number, stockSymbol: string) => 
   }
 }
 
-export async function DELETE(req: Request, { body }: any) {
+export async function DELETE(req: Request) {
+  const body = await req.json()
   const { stockSymbol } = body;
   const result = await deleteUserSelectedStocks(1, stockSymbol);
   return NextResponse.json(result);

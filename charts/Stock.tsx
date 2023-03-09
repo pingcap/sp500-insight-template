@@ -1,6 +1,6 @@
 'use client';
 import { FC } from 'react';
-import { ListItem } from '@/components/List';
+import { ListItem, ListItemProps } from '@/components/List';
 import clsx from 'clsx';
 import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/20/solid';
 import { unstable_cache } from '@/utils/cache';
@@ -21,12 +21,12 @@ export interface StockItem extends UnresolvedStockItem {
   last_change_percentage: number;
 }
 
-interface StockProps {
+interface StockProps extends Omit<ListItemProps, 'text' | 'description' | 'detail' | 'href'> {
   stock: StockItem | UnresolvedStockItem;
   href?: string;
 }
 
-const Stock: FC<StockProps> = ({ stock: propStock, href }) => {
+const Stock: FC<StockProps> = ({ stock: propStock, href, className, ...props }) => {
   // const [stock, setStock] = useState(propStock as StockItem);
   //
   // console.log(stock, isUnresolved(stock));
@@ -43,7 +43,7 @@ const Stock: FC<StockProps> = ({ stock: propStock, href }) => {
   return (
 
     <ListItem
-      className={clsx(stock.stock_symbol, { 'bg-secondary': symbol === stock.stock_symbol })}
+      className={clsx(stock.stock_symbol, { 'bg-secondary': symbol === stock.stock_symbol }, className)}
       href={href}
       text={(
         <>
@@ -64,6 +64,7 @@ const Stock: FC<StockProps> = ({ stock: propStock, href }) => {
           </span>
         </span>
       )}
+      {...props}
     />
   );
 };

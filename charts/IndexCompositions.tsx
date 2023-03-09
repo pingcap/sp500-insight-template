@@ -1,8 +1,6 @@
 'use client';
 import { FC, useMemo, useState } from 'react';
 import useSWR from 'swr';
-import Scrollable from '@/components/Scrollable';
-import { ListSearch } from '@/components/List';
 import Stocks from './Stocks';
 
 const IndexCompositions: FC<{ index: string }> = ({ index }) => {
@@ -17,10 +15,7 @@ const IndexCompositions: FC<{ index: string }> = ({ index }) => {
 
   return (
     <>
-      <ListSearch value={search} onChange={setSearch} className="my-2" />
-      <Scrollable className="h-[400px]">
-        <Stocks stocks={filteredData} />
-      </Scrollable>
+      <Stocks stocks={filteredData} />
     </>
   );
 };
@@ -38,7 +33,7 @@ type IndexCompositionRecord = {
   weight: number
 }
 
-const compositions = async ([index]: [string]): Promise<IndexCompositionRecord[]> => {
+export const compositions = async ([index]: [string]): Promise<IndexCompositionRecord[]> => {
   const res = await fetch(`/api/indexes/${index}/compositions`);
   const { rows } = await res.json();
   return rows.map(({ last_2nd_close_price, last_change_percentage, last_close_price, ...rest }: any) => ({
