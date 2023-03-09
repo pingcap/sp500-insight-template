@@ -23,7 +23,7 @@ export default function Home ({ params: { index } }: { params: { index: string }
         <h2 className="my-4">
           Sectors
         </h2>
-        <IndustryDistribution />
+        <IndustryDistribution index={index} />
       </section>
     </main>
   );
