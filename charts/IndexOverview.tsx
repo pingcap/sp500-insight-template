@@ -8,17 +8,13 @@ import * as ToggleGroup from '@radix-ui/react-toggle-group';
 import './common.css';
 import clsx from 'clsx';
 import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/20/solid';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParam } from '@/utils/hook';
 
 const IndexOverview: FC<{ index: string }> = ({ index }) => {
-  const pathname = usePathname();
-  const sp = useSearchParams();
-  const router = useRouter();
-  const duration = sp.get('duration') ?? '6M';
-
+  const [duration = '6M', setDuration] = useSearchParam('duration');
+  const { ref, useOption } = useECharts();
   const { data: priceHistoryRecords = [], isLoading: priceHistoryLoading } = useSWR([index, duration, 'priceHistory'], { fetcher: priceHistory, keepPreviousData: true });
   const { data: latestPriceRecord } = useSWR([index, 'latestPrice'], latestPrice);
-  const { ref, useOption } = useECharts();
 
   const today = latestPriceRecord?.last_updated_at ? new Date(latestPriceRecord.last_updated_at) : '--';
 
@@ -143,9 +139,7 @@ const IndexOverview: FC<{ index: string }> = ({ index }) => {
         type="single"
         defaultValue="center"
         value={String(duration)}
-        onValueChange={value => {
-          router.replace(`${pathname}?duration=${value}`);
-        }}
+        onValueChange={setDuration}
         aria-label="Duration"
       >
         {DURATIONS.map(({ name }) => (
