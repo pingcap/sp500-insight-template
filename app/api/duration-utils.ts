@@ -9,7 +9,7 @@ export function getDurationParams (req: NextRequest) {
   const duration = url.searchParams.get('duration') ?? '6M';
   let n: N;
   let unit: Unit;
-  const matched = duration.match(/^(\d)([YMD])$/);
+  const matched = duration.match(/^(\d+)([YMD])$/);
   if (!matched) {
     unit = 'YEAR';
     if (duration === 'YTD') {

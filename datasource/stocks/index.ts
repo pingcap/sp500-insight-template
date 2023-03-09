@@ -37,7 +37,7 @@ export type CompanyInfo = {
   ebitda: number
 }
 
-export async function getStockInfo (symbol: string): Promise<QueryResult<CompanyInfo>> {
+export const getStockInfo = async function getStockInfo (symbol: string): Promise<QueryResult<CompanyInfo>> {
   const queryStart = DateTime.now();
   const [rows] = await conn.query<any[]>({
     sql: querySQL,

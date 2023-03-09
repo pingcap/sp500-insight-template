@@ -8,17 +8,17 @@ import { useSearchParam } from '@/utils/hook';
 import type { CompanyInfo } from '@/datasource/stocks';
 
 interface StockOverviewProps {
-  // TODO: rename prop
-  index: string,
+  symbol: string,
   company: CompanyInfo
 }
 
-const StockOverview: FC<StockOverviewProps> = ({ index, company }) => {
+const StockOverview: FC<StockOverviewProps> = ({ symbol, company }) => {
   const { ref, useOption } = useECharts();
   const [duration, setDuration] = useSearchParam('duration');
-  const { data = [], isValidating } = useSWR([index, duration, 'stock'], {
+  const { data = [], isLoading } = useSWR([symbol, duration, 'stock'], {
     fetcher: fetchData,
     revalidateOnStale: false,
+    keepPreviousData: true,
   });
 
   useOption(() => ({
@@ -154,7 +154,7 @@ const StockOverview: FC<StockOverviewProps> = ({ index, company }) => {
         </tbody>
       </table>
       <DurationToggleGroup value={duration} onChange={setDuration} />
-      <ECharts ref={ref} className="aspect-[20/5]" loading={isValidating} />
+      <ECharts ref={ref} className="aspect-[20/5]" loading={isLoading} />
       <p>{company.long_business_summary}</p>
     </>
   );
