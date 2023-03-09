@@ -5,11 +5,11 @@ type N = number | 'CURRENT';
 export type Unit = 'DAY' | 'MONTH' | 'YEAR'
 
 export function getDurationParams (req: NextRequest) {
-  const url = new URL.URL(req.url)
-  const duration = url.searchParams.get('duration') ?? '6M'
+  const url = new URL.URL(req.url);
+  const duration = url.searchParams.get('duration') ?? '6M';
   let n: N;
   let unit: Unit;
-  const matched = duration.match(/^(\d)([YM])$/)
+  const matched = duration.match(/^(\d)([YMD])$/);
   if (!matched) {
     unit = 'YEAR';
     if (duration === 'YTD') {
@@ -20,10 +20,23 @@ export function getDurationParams (req: NextRequest) {
       n = 1;
     }
   } else {
-    const [, nValue, unitValue] = matched
+    const [, nValue, unitValue] = matched;
     n = parseInt(nValue);
-    unit = unitValue === 'Y' ? 'YEAR' : 'MONTH';
+    switch (unitValue) {
+      case 'Y':
+        unit = 'YEAR';
+        break;
+      case 'D':
+        unit = 'DAY';
+        break;
+      case 'M':
+        unit = 'MONTH';
+        break;
+      default:
+        unit = 'DAY';
+        break;
+    }
   }
 
-  return { n, unit }
+  return { n, unit };
 }

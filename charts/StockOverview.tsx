@@ -15,7 +15,7 @@ interface StockOverviewProps {
 
 const StockOverview: FC<StockOverviewProps> = ({ index, company }) => {
   const { ref, useOption } = useECharts();
-  const [duration = '6M', setDuration] = useSearchParam('duration');
+  const [duration, setDuration] = useSearchParam('duration');
   const { data = [], isValidating } = useSWR([index, duration, 'stock'], {
     fetcher: fetchData,
     revalidateOnStale: false,

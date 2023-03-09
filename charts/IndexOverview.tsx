@@ -11,7 +11,7 @@ import { useSearchParam } from '@/utils/hook';
 import DurationToggleGroup from '@/components/DurationToggleGroup';
 
 const IndexOverview: FC<{ index: string }> = ({ index }) => {
-  const [duration = '6M', setDuration] = useSearchParam('duration');
+  const [duration, setDuration] = useSearchParam('duration');
   const { ref, useOption } = useECharts();
   const { data: priceHistoryRecords = [], isLoading: priceHistoryLoading } = useSWR([index, duration, 'priceHistory'], { fetcher: priceHistory, keepPreviousData: true });
   const { data: latestPriceRecord } = useSWR([index, 'latestPrice'], latestPrice);
@@ -79,8 +79,6 @@ const IndexOverview: FC<{ index: string }> = ({ index }) => {
         x: 'record_date',
         y: 'price',
       },
-      smooth: true,
-      sampling: 'lttb',
       symbolSize: 0,
       datasetIndex: 0,
       lineStyle: {
@@ -109,6 +107,9 @@ const IndexOverview: FC<{ index: string }> = ({ index }) => {
           }]),
       },
     },
+    yAxis: {
+      min: getMinPrice(priceHistoryRecords),
+    },
     dataset: {
       source: priceHistoryRecords,
     },
@@ -134,7 +135,7 @@ const IndexOverview: FC<{ index: string }> = ({ index }) => {
           {today !== '--' ? dtf.format(today) : '--'}
         </span>
       </div>
-      <DurationToggleGroup value={duration} onChange={setDuration} />
+      <DurationToggleGroup value={duration ?? '6M'} onChange={setDuration} />
       <ECharts ref={ref} className="mt-4 w-full aspect-[20/9]" loading={priceHistoryLoading} />
     </main>
   );
@@ -180,4 +181,32 @@ const latestPrice = async ([index]: [string]): Promise<IndexLatestPrice> => {
   };
 };
 
+function getMinPrice (records: IndexHistoryPriceRecord[]): number {
+  const n = records.reduce((min, record) => Math.min(min, record.price), Infinity);
+  if (isFinite(n)) {
+    let i = 10;
+    while (Math.floor(n / i) > 0) {
+      i *= 10;
+    }
+    i /= 10;
+    let m = Math.floor(n / i) * i;
+    if (n - m > i / 2) {
+      if (n - m > i * 3 / 4) {
+        return m + i * 3 / 4;
+      } else {
+        return m + i / 2
+      }
+    } else {
+      if (n - m > i / 4) {
+        return m + i / 4
+      } else {
+        return m;
+      }
+    }
+  } else {
+    return 0;
+  }
+}
+
 const dtf = new Intl.DateTimeFormat('en', { dateStyle: 'long', timeStyle: 'long' });
+

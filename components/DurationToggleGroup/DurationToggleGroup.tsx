@@ -31,6 +31,18 @@ interface Duration {
 
 const DURATIONS: Duration[] = [
   {
+    name: '7D',
+  },
+  {
+    name: '14D',
+  },
+  {
+    name: '1M',
+  },
+  {
+    name: '3M',
+  },
+  {
     name: '6M',
   },
   {
