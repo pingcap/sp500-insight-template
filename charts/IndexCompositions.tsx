@@ -8,7 +8,7 @@ const IndexCompositions: FC<{ index: string }> = ({ index }) => {
 
   return (
     <>
-      <Stocks stocks={data} />
+      <Stocks stocks={data} href='/optional/<symbol>' />
     </>
   );
 };

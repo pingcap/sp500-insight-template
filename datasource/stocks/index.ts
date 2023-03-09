@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon';
-import mysql from 'mysql2/promise';
-import { NextResponse } from 'next/server';
+import { QueryResult } from '@/datasource/query';
+import { conn } from '@/datasource/conn';
 
 const querySQL = `
     SELECT stock_symbol,
@@ -21,13 +21,28 @@ const querySQL = `
     ;
 `;
 
-const conn = mysql.createPool({
-  uri: process.env.DATABASE_URL,
-});
+export type CompanyInfo = {
+  stock_symbol: string
+  short_name: string
+  long_name: string
+  long_business_summary: string
+  sector: string
+  industry: string
+  city: string
+  state: string
+  country: string
+  full_time_employees: number
+  market_cap: number
+  revenue_growth: number
+  ebitda: number
+}
 
-export async function getStockInfo (symbol: string) {
+export async function getStockInfo (symbol: string): Promise<QueryResult<CompanyInfo>> {
   const queryStart = DateTime.now();
-  const [rows] = await conn.query<any[]>(querySQL, [symbol]);
+  const [rows] = await conn.query<any[]>({
+    sql: querySQL,
+    values: [symbol],
+  });
   const queryEnd = DateTime.now();
   const queryCost = queryEnd.diff(queryStart).as('seconds');
 
@@ -37,10 +52,4 @@ export async function getStockInfo (symbol: string) {
     queryEnd,
     queryCost,
   };
-}
-
-export async function GET (req: Request, { params }: any) {
-  const { symbol } = params;
-  const result = await getStockInfo(symbol as string);
-  return NextResponse.json(result);
 }

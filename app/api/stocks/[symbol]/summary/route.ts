@@ -1,6 +1,6 @@
-import mysql from 'mysql2/promise';
 import { DateTime } from 'luxon';
 import { NextResponse } from 'next/server';
+import { conn } from '@/datasource/conn';
 
 const querySQL = `
     SELECT stock_symbol,
@@ -20,13 +20,9 @@ const querySQL = `
           FROM stock_price_history sph
                    left join companies c on sph.stock_symbol = c.stock_symbol
           WHERE record_date > DATE_SUB((SELECT MAX(record_date) FROM stock_price_history), INTERVAL 2 DAY)
-            AND sph.stock_symbol = 'AAPL') sub
+            AND sph.stock_symbol = ?) sub
     WHERE row_num = 2
 `;
-
-const conn = mysql.createPool({
-  uri: process.env.DATABASE_URL,
-});
 
 export async function getStockSummary (symbol: string) {
   const queryStart = DateTime.now();

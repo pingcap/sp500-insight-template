@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 const Navigator: FC = () => {
   return (
-    <NavigationMenu.Root className='container mx-auto p-2'>
+    <NavigationMenu.Root className='container sticky top-0 z-20 bg-primary mx-auto p-2 h-12'>
       <NavigationMenu.List className='flex items-center text-xl gap-8'>
         <NavigationMenu.Item>
           <NavigationMenu.Link asChild>

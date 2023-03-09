@@ -3,18 +3,31 @@ import { FC } from 'react';
 import ECharts, { useECharts } from '@/components/ECharts';
 import { CallbackDataParams } from 'echarts/types/dist/shared';
 import useSWR from 'swr';
+import DurationToggleGroup from '@/components/DurationToggleGroup';
+import { useSearchParam } from '@/utils/hook';
+import type { CompanyInfo } from '@/datasource/stocks';
 
-// TODO: rename prop
-const StockOverview: FC<{ index: string }> = ({ index }) => {
+interface StockOverviewProps {
+  // TODO: rename prop
+  index: string,
+  company: CompanyInfo
+}
+
+const StockOverview: FC<StockOverviewProps> = ({ index, company }) => {
   const { ref, useOption } = useECharts();
-
-  const { data = [], isValidating } = useSWR([index, 'stock'], {
+  const [duration = '6M', setDuration] = useSearchParam('duration');
+  const { data = [], isValidating } = useSWR([index, duration, 'stock'], {
     fetcher: fetchData,
     revalidateOnStale: false,
   });
 
   useOption(() => ({
-    grid: {},
+    grid: {
+      left: 48,
+      top: 8,
+      right: 8,
+      bottom: 24,
+    },
     tooltip: {
       trigger: 'axis',
       axisPointer: {
@@ -56,45 +69,45 @@ const StockOverview: FC<{ index: string }> = ({ index }) => {
       datasetId: 'data',
 
     },
-    dataZoom: {
-      borderColor: 'transparent',
-      backgroundColor: 'transparent',
-      fillerColor: 'transparent',
-      handleStyle: {
-        color: '#8C181820',
-        borderWidth: 0,
-      },
-      moveHandleStyle: {
-        color: '#8C181820',
-      },
-      brushStyle: {
-        color: '#DC2E2E80',
-      },
-      dataBackground: {
-        lineStyle: {
-          color: '#888',
-        },
-        areaStyle: {
-          color: '#33333380',
-        },
-      },
-      selectedDataBackground: {
-        lineStyle: {
-          color: '#DC2E2E',
-        },
-        areaStyle: {
-          color: '#DC2E2E80',
-        },
-      },
-      emphasis: {
-        moveHandleStyle: {
-          color: '#DC2E2E80',
-        },
-        handleStyle: {
-          color: '#DC2E2E80',
-        },
-      },
-    },
+    // dataZoom: {
+    //   borderColor: 'transparent',
+    //   backgroundColor: 'transparent',
+    //   fillerColor: 'transparent',
+    //   handleStyle: {
+    //     color: '#8C181820',
+    //     borderWidth: 0,
+    //   },
+    //   moveHandleStyle: {
+    //     color: '#8C181820',
+    //   },
+    //   brushStyle: {
+    //     color: '#DC2E2E80',
+    //   },
+    //   dataBackground: {
+    //     lineStyle: {
+    //       color: '#888',
+    //     },
+    //     areaStyle: {
+    //       color: '#33333380',
+    //     },
+    //   },
+    //   selectedDataBackground: {
+    //     lineStyle: {
+    //       color: '#DC2E2E',
+    //     },
+    //     areaStyle: {
+    //       color: '#DC2E2E80',
+    //     },
+    //   },
+    //   emphasis: {
+    //     moveHandleStyle: {
+    //       color: '#DC2E2E80',
+    //     },
+    //     handleStyle: {
+    //       color: '#DC2E2E80',
+    //     },
+    //   },
+    // },
   }));
 
   useOption(() => ({
@@ -105,7 +118,45 @@ const StockOverview: FC<{ index: string }> = ({ index }) => {
   }), [data]);
 
   return (
-    <ECharts ref={ref} className="aspect-[20/5]" loading={isValidating} />
+    <>
+      <h1>{company.long_name}</h1>
+      <table className='text-left'>
+        <tbody>
+        <tr>
+          <th>Sector / Industry</th>
+          <td>{company.sector} / {company.industry}</td>
+        </tr>
+        <tr>
+          <th>Location</th>
+          <td>{company.city}, {company.state}, {company.country}</td>
+        </tr>
+        <tr>
+          <th>Full time employees</th>
+          <td>{company.full_time_employees}</td>
+        </tr>
+        <tr>
+          <th>Market cap</th>
+          <td>{company.market_cap}</td>
+        </tr>
+        <tr>
+          <th>Revenue growth</th>
+          <td>{company.revenue_growth}</td>
+        </tr>
+        <tr>
+          <th>Ebitda</th>
+          <td>{company.ebitda}</td>
+        </tr>
+        </tbody>
+      </table>
+      <table>
+        <tbody>
+        <tr></tr>
+        </tbody>
+      </table>
+      <DurationToggleGroup value={duration} onChange={setDuration} />
+      <ECharts ref={ref} className="aspect-[20/5]" loading={isValidating} />
+      <p>{company.long_business_summary}</p>
+    </>
   );
 };
 
@@ -120,8 +171,8 @@ type StockPriceData = {
   adj_close: number
 }
 
-async function fetchData ([index]: [string]): Promise<StockPriceData[]> {
-  const res = await fetch(`/api/stocks/${index}/price_history`);
+async function fetchData ([index, duration]: [string, string]): Promise<StockPriceData[]> {
+  const res = await fetch(`/api/stocks/${index}/price_history?duration=${duration}`);
   const { rows } = await res.json();
   return rows.map(({ low, high, open, close, adj_close, record_date }: any) => ({
     low: parseFloat(low),

@@ -4,11 +4,11 @@ import { FC, useMemo } from 'react';
 import useSWR from 'swr';
 import ECharts, { useECharts } from '@/components/ECharts';
 import { graphic } from 'echarts';
-import * as ToggleGroup from '@radix-ui/react-toggle-group';
 import './common.css';
 import clsx from 'clsx';
 import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/20/solid';
 import { useSearchParam } from '@/utils/hook';
+import DurationToggleGroup from '@/components/DurationToggleGroup';
 
 const IndexOverview: FC<{ index: string }> = ({ index }) => {
   const [duration = '6M', setDuration] = useSearchParam('duration');
@@ -134,20 +134,7 @@ const IndexOverview: FC<{ index: string }> = ({ index }) => {
           {today !== '--' ? dtf.format(today) : '--'}
         </span>
       </div>
-      <ToggleGroup.Root
-        className="flex gap-4 mt-4 mb-2"
-        type="single"
-        defaultValue="center"
-        value={String(duration)}
-        onValueChange={setDuration}
-        aria-label="Duration"
-      >
-        {DURATIONS.map(({ name }) => (
-          <ToggleGroup.Item className="toggle-item" key={name} value={name} aria-label={name}>
-            {name}
-          </ToggleGroup.Item>
-        ))}
-      </ToggleGroup.Root>
+      <DurationToggleGroup value={duration} onChange={setDuration} />
       <ECharts ref={ref} className="mt-4 w-full aspect-[20/9]" loading={priceHistoryLoading} />
     </main>
   );
@@ -192,26 +179,5 @@ const latestPrice = async ([index]: [string]): Promise<IndexLatestPrice> => {
     last_changes: parseFloat(last_changes),
   };
 };
-
-interface Duration {
-  name: string;
-}
-
-const DURATIONS: Duration[] = [
-  {
-    name: '6M',
-  },
-  {
-    name: 'YTD',
-  },
-  {
-    name: '1Y',
-  },
-  {
-    name: '5Y',
-  },
-  {
-    name: 'MAX',
-  }];
 
 const dtf = new Intl.DateTimeFormat('en', { dateStyle: 'long', timeStyle: 'long' });

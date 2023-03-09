@@ -7,20 +7,39 @@ import StockOverlay from './StockOverlay';
 import useSWR from 'swr';
 import { compositions } from '@/charts/IndexCompositions';
 import Scrollable from '@/components/Scrollable';
+import clsx from 'clsx';
+import { useSelectedLayoutSegment } from 'next/navigation';
+import { useRefCallback } from '@/utils/hook';
 
 export interface StocksProps {
+  className?: string;
   stocks: AnyStockItem[];
   href?: string;
   userId?: number;
   searchPlaceholder?: string;
 }
 
-const Stocks: FC<StocksProps> = ({ stocks: propStocks, href, userId, searchPlaceholder }: StocksProps) => {
+const Stocks: FC<StocksProps> = ({ className, stocks: propStocks, href, userId, searchPlaceholder }: StocksProps) => {
+  const currentSymbol = useSelectedLayoutSegment();
+
+  const [filterTriggered, setFilterTriggered] = useState(false);
   const [filter, setFilter] = useState('');
   const [stocks, setStocks] = useState(propStocks);
   const { hasOperations, onAdd, ...operations } = useStockOperations(userId, setStocks);
 
-  const { data: all = [] } = useSWR(hasOperations ? ['SP500', 'compositions'] : undefined, compositions);
+  const { data: all = [] } = useSWR(filterTriggered && hasOperations ? ['SP500', 'compositions'] : undefined, compositions);
+
+  useEffect(() => {
+    if (propStocks !== stocks) {
+      setStocks(propStocks);
+    }
+  }, [propStocks]);
+
+  const handleFilterChange = useRefCallback((value: string) => {
+    setFilter(value);
+    setFilterTriggered(true);
+  });
+
   const filtered = useMemo(() => {
     if (filter) {
       return (hasOperations ? all : stocks).filter(item =>
@@ -32,33 +51,35 @@ const Stocks: FC<StocksProps> = ({ stocks: propStocks, href, userId, searchPlace
     }
   }, [filter, all, stocks, hasOperations]);
 
-  useEffect(() => {
-    if (propStocks !== stocks) {
-      setStocks(propStocks);
-    }
-  }, [propStocks]);
-
   const hasStock = useCallback((symbol: string) => {
     return !!stocks.find(s => s.stock_symbol === symbol);
   }, [stocks]);
 
   return (
-    <>
-      <ListSearch value={filter} onChange={setFilter} placeholder={searchPlaceholder} />
-      <Scrollable className="mt-4 h-[600px]">
+    <div className={clsx('py-4', className)}>
+      <ListSearch value={filter} onChange={handleFilterChange} placeholder={searchPlaceholder} />
+      <Scrollable className="mt-4 h-[400px] md:h-[calc(100%-52.5px)]">
         <List>
+          {/* TODO: simplify this */}
+          {currentSymbol && filtered.findIndex(s => s.stock_symbol === currentSymbol) === -1 && (
+            <Stock
+              key={currentSymbol}
+              stock={{ stock_symbol: currentSymbol }}
+              overlay={<StockOverlay onAdd={onAdd} />}
+            />
+          )}
           {filtered.map((stock) => (
             <Stock
               key={stock.stock_symbol}
               stock={stock}
               href={href}
               menu={hasOperations ? <StockContextMenu stock={stock} {...operations} /> : undefined}
-              overlay={hasOperations && !hasStock(stock.stock_symbol) ? <StockOverlay stock={stock} onAdd={onAdd} /> : undefined}
+              overlay={!hasStock(stock.stock_symbol) ? <StockOverlay onAdd={onAdd} /> : undefined}
             />
           ))}
         </List>
       </Scrollable>
-    </>
+    </div>
   );
 };
 
@@ -84,7 +105,7 @@ function useStockOperations (userId: number | undefined, setStocks: (mutate: (st
         stockSymbol: stock.stock_symbol,
       }),
     });
-    setStocks((stocks) => stocks.concat(stock));
+    setStocks((stocks) => [stock, ...stocks]);
   }, []);
 
   if (typeof userId === 'number' && isFinite(userId)) {

@@ -1,11 +1,3 @@
-.toggle-item {
-  @apply rounded px-2 py-1 bg-secondary text-secondary transition-colors;
-}
-
-.toggle-item[aria-checked=true] {
-  @apply bg-active text-significant;
-}
-
 .chart {
   @apply mt-8;
 }
