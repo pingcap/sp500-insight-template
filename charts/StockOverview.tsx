@@ -8,7 +8,10 @@ import useSWR from 'swr';
 const StockOverview: FC<{ index: string }> = ({ index }) => {
   const { ref, useOption } = useECharts();
 
-  const { data = [], isValidating } = useSWR([index, 'stock'], fetchData);
+  const { data = [], isValidating } = useSWR([index, 'stock'], {
+    fetcher: fetchData,
+    revalidateOnStale: false,
+  });
 
   useOption(() => ({
     grid: {},
