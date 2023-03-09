@@ -8,8 +8,8 @@ const IndexCompositions: FC<{ index: string }> = ({ index }) => {
   const { data = [] } = useSWR([index, 'compositions'], compositions);
   const filteredData = useMemo(() => {
     return data.filter(item =>
-      item.stock_symbol.toLowerCase().indexOf(search) !== -1
-      || item.short_name.toLowerCase().indexOf(search) !== -1,
+      item.stock_symbol.toLowerCase().indexOf(search.toLowerCase()) !== -1
+      || item.short_name.toLowerCase().indexOf(search.toLowerCase()) !== -1,
     );
   }, [search, data]);
 

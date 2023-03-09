@@ -3,7 +3,6 @@ import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import List, { ListSearch } from '@/components/List';
 import Stock, { StockItem, UnresolvedStockItem } from './Stock';
 import StockContextMenu from '@/charts/StockMenu';
-import clsx from 'clsx';
 import StockOverlay from '@/charts/StockOverlay';
 import useSWR from 'swr';
 import { compositions } from '@/charts/IndexCompositions';
@@ -15,10 +14,10 @@ export interface StocksProps {
   stocks: AnyStockItem[];
   href?: string;
   userId?: number;
-  addable?: boolean;
+  searchPlaceholder?: string;
 }
 
-const Stocks: FC<StocksProps> = ({ stocks: propStocks, href, userId, addable }: StocksProps) => {
+const Stocks: FC<StocksProps> = ({ stocks: propStocks, href, userId, searchPlaceholder }: StocksProps) => {
   const [filter, setFilter] = useState('');
   const [stocks, setStocks] = useState(propStocks);
   const { hasOperations, onAdd, ...operations } = useStockOperations(userId, setStocks);
@@ -27,8 +26,8 @@ const Stocks: FC<StocksProps> = ({ stocks: propStocks, href, userId, addable }: 
   const filtered = useMemo(() => {
     if (filter) {
       return (hasOperations ? all : stocks).filter(item =>
-        item.stock_symbol.toLowerCase().indexOf(filter) !== -1
-        || item.short_name?.toLowerCase().indexOf(filter) !== -1,
+        item.stock_symbol.toLowerCase().indexOf(filter.toLowerCase()) !== -1
+        || item.short_name?.toLowerCase().indexOf(filter.toLowerCase()) !== -1,
       );
     } else {
       return stocks;
@@ -47,13 +46,12 @@ const Stocks: FC<StocksProps> = ({ stocks: propStocks, href, userId, addable }: 
 
   return (
     <>
-      <ListSearch value={filter} onChange={setFilter} />
+      <ListSearch value={filter} onChange={setFilter} placeholder={searchPlaceholder} />
       <Scrollable className="mt-4 h-[600px]">
         <List>
           {filtered.map((stock) => (
             <Stock
               key={stock.stock_symbol}
-              className={clsx({ 'opacity-30': addable && userId })}
               stock={stock}
               href={href}
               menu={hasOperations ? <StockContextMenu stock={stock} {...operations} /> : undefined}

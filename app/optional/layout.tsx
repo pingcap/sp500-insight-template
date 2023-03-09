@@ -12,6 +12,7 @@ const Layout = ({ children }: PropsWithChildren) => {
           stocks={stocks}
           href="/optional/<symbol>"
           userId={1}
+          searchPlaceholder='Search all...'
         />
       </aside>
       <main className="md:col-span-8">
