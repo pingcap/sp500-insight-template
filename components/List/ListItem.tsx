@@ -6,12 +6,13 @@ import * as ContextMenu from '@radix-ui/react-context-menu';
 
 type ContextMenuElement = ReactElement<ContextMenu.MenuContentProps, typeof ContextMenu.Content>;
 
-export interface ListItemProps extends Omit<HTMLAttributes<HTMLLIElement>, 'children'>, Pick<LinkProps, 'href' | 'as'> {
+export interface ListItemProps extends Omit<HTMLAttributes<HTMLLIElement>, 'children'>, Pick<LinkProps, 'as'> {
   text?: ReactNode;
   description?: ReactNode;
   detail?: ReactNode;
   menu?: ContextMenuElement;
   overlay?: ReactElement;
+  href?: string;
 }
 
 const ListItem: FC<ListItemProps> = ({ text, description, detail, href, as, className, menu, overlay, ...props }) => {

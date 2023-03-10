@@ -11,6 +11,8 @@
 }
 
 .list-item .left, .list-item .right {
+  width: max-content;
+  flex: 1;
 }
 
 .list-item .left .text {

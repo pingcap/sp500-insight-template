@@ -1,9 +1,9 @@
 import { unstable_serialize } from 'swr';
 import { cache } from 'react';
 
-export function unstable_cache<P, F extends (...args: any) => Promise<P>> (fn: F): F {
+export function unstable_cache<P, F extends (...args: any) => Promise<P>> (fn: F, ssrNativeCache = false): F {
   if (typeof window === 'undefined') {
-    return cache(fn);
+    return ssrNativeCache ? cache(fn) : fn;
   } else {
     const cache = new Map<string, Promise<any>>();
 

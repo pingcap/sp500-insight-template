@@ -4,11 +4,11 @@ import useSWR from 'swr';
 import Stocks from '@/components/Stocks';
 
 const IndexCompositions: FC<{ index: string }> = ({ index }) => {
-  const { data = [] } = useSWR([index, 'compositions'], compositions);
+  const { data = [], isLoading } = useSWR([index, 'compositions'], compositions);
 
   return (
     <>
-      <Stocks className='h-[400px]' stocks={data} href='/optional/<symbol>' />
+      <Stocks className='h-[400px]' stocks={data} href='/optional/<symbol>' loading={isLoading && 5} />
     </>
   );
 };

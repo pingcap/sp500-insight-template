@@ -1,15 +1,9 @@
-import { fetchUserSelectedStocks } from '@/app/optional/data';
-import { use } from 'react';
-import { redirect } from 'next/navigation';
-
 const Page = () => {
-  const stocks = use(fetchUserSelectedStocks(1));
-
-  if (stocks.length > 0) {
-    redirect(`/optional/${stocks[0].stock_symbol}`);
-  }
-
-  return (<>No selected stocks yet.</>);
+  return (
+    <div className="flex items-center justify-center h-full">
+      <h2 className="text-secondary text-2xl text-center">Select a stock</h2>
+    </div>
+  );
 };
 
 export default Page;

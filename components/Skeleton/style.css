@@ -1,0 +1,31 @@
+.skeleton-primitive {
+  animation-name: skeleton-blink;
+  animation-iteration-count: infinite;
+  animation-duration: 2.5s;
+  animation-timing-function: ease;
+}
+
+.skeleton-inline {
+  @apply inline-block rounded bg-current block min-w-[4em];
+  height: 1em;
+  line-height: inherit;
+}
+
+.skeleton-paragraph {
+}
+
+.skeleton-fullwidth {
+  @apply w-full;
+}
+
+@keyframes skeleton-blink {
+  0% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 0.2;
+  }
+}

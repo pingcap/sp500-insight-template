@@ -5,14 +5,14 @@ import { CallbackDataParams } from 'echarts/types/dist/shared';
 import useSWR from 'swr';
 import DurationToggleGroup from '@/components/DurationToggleGroup';
 import { useSearchParam } from '@/utils/hook';
-import type { CompanyInfo } from '@/datasource/stocks';
+import { useSelectedLayoutSegment } from 'next/navigation';
 
 interface StockOverviewProps {
-  symbol: string,
-  company: CompanyInfo
+  symbol?: string,
 }
 
-const StockOverview: FC<StockOverviewProps> = ({ symbol, company }) => {
+const StockOverview: FC<StockOverviewProps> = ({ symbol: propSymbol }) => {
+  const symbol = useSelectedLayoutSegment() ?? propSymbol;
   const { ref, useOption } = useECharts();
   const [duration, setDuration] = useSearchParam('duration');
   const { data = [], isLoading } = useSWR([symbol, duration, 'stock'], {
@@ -119,35 +119,7 @@ const StockOverview: FC<StockOverviewProps> = ({ symbol, company }) => {
 
   return (
     <>
-      <h1>{company.long_name}</h1>
-      <table className='text-left'>
-        <tbody>
-        <tr>
-          <th>Sector / Industry</th>
-          <td>{company.sector} / {company.industry}</td>
-        </tr>
-        <tr>
-          <th>Location</th>
-          <td>{company.city}, {company.state}, {company.country}</td>
-        </tr>
-        <tr>
-          <th>Full time employees</th>
-          <td>{company.full_time_employees}</td>
-        </tr>
-        <tr>
-          <th>Market cap</th>
-          <td>{company.market_cap}</td>
-        </tr>
-        <tr>
-          <th>Revenue growth</th>
-          <td>{company.revenue_growth}</td>
-        </tr>
-        <tr>
-          <th>Ebitda</th>
-          <td>{company.ebitda}</td>
-        </tr>
-        </tbody>
-      </table>
+
       <table>
         <tbody>
         <tr></tr>
@@ -155,7 +127,6 @@ const StockOverview: FC<StockOverviewProps> = ({ symbol, company }) => {
       </table>
       <DurationToggleGroup value={duration} onChange={setDuration} />
       <ECharts ref={ref} className="aspect-[20/5]" loading={isLoading} />
-      <p>{company.long_business_summary}</p>
     </>
   );
 };

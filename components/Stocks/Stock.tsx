@@ -1,10 +1,13 @@
 'use client';
-import { cloneElement, FC, use, useState } from 'react';
+import { cloneElement, FC, useMemo } from 'react';
 import { ListItem, ListItemProps } from '@/components/List';
 import clsx from 'clsx';
 import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/20/solid';
-import { unstable_cache } from '@/utils/cache';
 import { useSelectedLayoutSegment } from 'next/navigation';
+import { SkeletonInline } from '@/components/Skeleton';
+import { unique } from '@/datasource/query';
+import { useAuto } from '@/utils/hook';
+import { PendingPercentTag } from './StockSkeleton';
 
 export interface UnresolvedStockItem {
   stock_symbol: string;
@@ -28,69 +31,63 @@ interface StockProps extends Omit<ListItemProps, 'text' | 'description' | 'detai
   href?: string;
 }
 
-const Stock: FC<StockProps> = ({ stock: propStock, href, className, overlay, ...props }) => {
-  const [stock, setStock] = useState(propStock);
-
-  if (!isResolved(stock)) {
-    setStock(use(fetchStockSummary(stock.stock_symbol)));
-  }
-
+const Stock: FC<StockProps> = ({ stock, href, className, overlay, ...props }) => {
+  stock = useAuto(stock, isResolved, fetchStockSummary);
   const symbol = useSelectedLayoutSegment();
 
-  href = href ? href.replaceAll('<symbol>', stock.stock_symbol) : `/stocks/${stock.stock_symbol}`;
+  href = useMemo(() => {
+    return href ? href.replaceAll('<symbol>', stock.stock_symbol) : `/stocks/${stock.stock_symbol}`;
+  }, [href, stock.stock_symbol]);
 
-  if (!isResolved(stock)) {
-    return (
-      <ListItem
-        href={href}
-        text={stock.stock_symbol}
-      />
-    )
-  } else {
-    return (
-      <ListItem
-        className={clsx(stock.stock_symbol, { 'bg-secondary': symbol === stock.stock_symbol }, className)}
-        href={href}
-        text={(
-          <>
-            {stock.stock_symbol}
-            <span className="text-secondary ml-2 text-sm">
-            {stock.exchange_symbol}
+  return (
+    <ListItem
+      className={clsx(stock.stock_symbol, { 'bg-secondary': symbol === stock.stock_symbol }, className)}
+      href={href}
+      text={(
+        <>
+          {stock.stock_symbol}
+          <span className="text-secondary ml-2 text-sm">
+            <SkeletonInline estimateCharacters={3}>
+              {stock.exchange_symbol}
+            </SkeletonInline>
           </span>
-          </>
-        )}
-        description={stock.short_name}
-        detail={(
-          <span className="flex flex-col text-right">
+        </>
+      )}
+      description={(
+        <SkeletonInline estimateCharacters={8}>
+          {stock.short_name}
+        </SkeletonInline>
+      )}
+      detail={(
+        <span className="flex flex-col text-right">
           <span className="text-significant text-2xl">
-            {stock.last_close_price.toFixed(2)}
+            <SkeletonInline estimateCharacters={3}>
+              {stock.last_close_price?.toFixed(2)}
+            </SkeletonInline>
           </span>
           <span>
-            <PercentTag value={stock.last_change_percentage} />
+            {stock.last_change_percentage ? <PercentTag value={stock.last_change_percentage} /> : <PendingPercentTag />}
           </span>
         </span>
-        )}
-        overlay={overlay && cloneElement(overlay, { stock })}
-        {...props}
-      />
-    );
-  }
-
+      )}
+      overlay={overlay && cloneElement(overlay, { stock })}
+      {...props}
+    />
+  );
 };
 
 Stock.displayName = 'Stock';
 
 export default Stock;
 
-const fetchStockSummary = unstable_cache(async (id: string): Promise<StockItem> => {
-  const res = await fetch(`/api/stocks/${id}/summary`);
-  const { rows } = await res.json();
-  return rows[0];
-});
+const fetchStockSummary = async (stock: UnresolvedStockItem): Promise<StockItem> => {
+  const res = await fetch(`/api/stocks/${stock.stock_symbol}/summary`);
+  return unique(await res.json());
+};
 
 const PercentTag = ({ value }: { value: number }) => {
   return (
-    <span className={clsx('inline-flex items-center justify-end text-significant rounded px-1 min-w-[80px]', value > 0 ? 'bg-red-600' : value < 0 ? 'bg-green-600' : 'bg-gray-600')}>
+    <span className={clsx('inline-flex items-center justify-end text-significant rounded px-1 min-w-[80px]', value > 0 ? 'bg-red-600' : value < 0 ? 'bg-green-600' : ' bg-[#888]')}>
       {value > 0 ? <ArrowUpIcon className="inline-block h-4" /> : value < 0 ? <ArrowDownIcon className="inline-block h-4" /> : undefined}
       {Math.abs(value * 100).toFixed(2)}%
     </span>

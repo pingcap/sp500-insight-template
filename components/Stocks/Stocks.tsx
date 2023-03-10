@@ -10,6 +10,7 @@ import Scrollable from '@/components/Scrollable';
 import clsx from 'clsx';
 import { useSelectedLayoutSegment } from 'next/navigation';
 import { useRefCallback } from '@/utils/hook';
+import StockSkeleton from '@/components/Stocks/StockSkeleton';
 
 export interface StocksProps {
   className?: string;
@@ -17,9 +18,10 @@ export interface StocksProps {
   href?: string;
   userId?: number;
   searchPlaceholder?: string;
+  loading?: number | false;
 }
 
-const Stocks: FC<StocksProps> = ({ className, stocks: propStocks, href, userId, searchPlaceholder }: StocksProps) => {
+const Stocks: FC<StocksProps> = ({ className, stocks: propStocks, href, userId, searchPlaceholder, loading }: StocksProps) => {
   const currentSymbol = useSelectedLayoutSegment();
 
   const [filterTriggered, setFilterTriggered] = useState(false);
@@ -76,6 +78,9 @@ const Stocks: FC<StocksProps> = ({ className, stocks: propStocks, href, userId, 
               menu={hasOperations ? <StockContextMenu stock={stock} {...operations} /> : undefined}
               overlay={!hasStock(stock.stock_symbol) ? <StockOverlay onAdd={onAdd} /> : undefined}
             />
+          ))}
+          {loading && Array(loading).fill(null).map((_, i) => (
+            <StockSkeleton key={i} />
           ))}
         </List>
       </Scrollable>
