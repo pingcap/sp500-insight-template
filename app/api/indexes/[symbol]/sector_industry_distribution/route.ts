@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { executeEndpoint } from '@/datasource/data-api';
+import { executeEndpoint, withUpstreamErrorHandled } from '@/datasource/data-api';
 import SectorIndustryDistributionEndpoint from '@/datasource/indexes/sectory_industry_distribution';
 
 const getSectorIndustryList = async (symbol: string) => {
@@ -10,6 +10,8 @@ const getSectorIndustryList = async (symbol: string) => {
 
 export async function GET (req: Request, { params }: any) {
   const { symbol } = params;
-  const result = await getSectorIndustryList(symbol as string);
-  return NextResponse.json(result);
+  return withUpstreamErrorHandled(async () => {
+    const result = await getSectorIndustryList(symbol as string);
+    return NextResponse.json(result);
+  })
 }

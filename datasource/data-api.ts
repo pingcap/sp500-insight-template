@@ -1,4 +1,5 @@
 import { wrapFetchWithDigestFlow } from '@/utils/digest-auth';
+import { Response } from 'next/dist/compiled/@edge-runtime/primitives/fetch';
 
 export type DataApiParams = Record<string, string | number | boolean>
 
@@ -51,14 +52,14 @@ export function defineEndpoint<Params extends DataApiParams, Data extends Record
 
 function transformResponse<DT extends Record<string, any>> (response: GeneralResponse<DT>) {
   if (response.code !== 200) {
-    throw new Error(`${response.code}: ${response.message}`);
+    throw UpstreamError.ofResponse(response);
   }
   const [data] = response.data;
   if (!data) {
     throw new Error('Invalid data api response');
   }
   if (data.err_code !== 0) {
-    throw new Error(`Query failed: ${data.err_code} ${data.err_message} ${data.query}`);
+    throw UpstreamError.ofSql(data);
   }
   return data.rows.map(columns => {
     return columns.reduce((dt: DT, columnData, index) => {
@@ -88,7 +89,17 @@ export async function executeEndpoint<Params extends DataApiParams, Data extends
   const response = await digestFetch(url, {
     method: endpoint.method,
   });
-  const json = await response.json();
+
+  if (!response.ok) {
+    throw UpstreamError.ofHttp(response);
+  }
+
+  let json: any;
+  try {
+    json = await response.json();
+  } catch (e) {
+    throw new UpstreamError('Invalid JSON', undefined, e);
+  }
 
   const rows = transformResponse<Data>(json);
   const { start_ms, end_ms, latency, row_count, row_affect } = json;
@@ -130,5 +141,60 @@ function convertValue (value: any, column: DataColumn<any>): any {
       return parseInt(value);
     default:
       return value;
+  }
+}
+
+export class UpstreamError extends Error {
+  constructor (message: string, public response?: Response, public body?: any) {
+    super(message);
+  }
+
+  static ofHttp (response: Response) {
+    const message = `${response.status} ${response.statusText}`;
+
+    return new UpstreamError(message, response);
+  }
+
+  static ofSql (response: QueryResponse<any>) {
+    return new UpstreamError(`${response.err_code} ${response.err_message}: ${response.query}`, undefined, response);
+  }
+
+  static ofResponse (response: GeneralResponse<any>) {
+    return new UpstreamError(`${response.code} ${response.message}`, undefined, response);
+  }
+
+  async getUpstreamResponseText () {
+    if (this.body) {
+      return this.body;
+    }
+    if (this.response) {
+      let body: any;
+      if (!this.response.bodyUsed) {
+        try {
+          return await this.response.json();
+        } catch {
+          try {
+            return await this.response.text();
+          } catch {
+          }
+        }
+      }
+    }
+    return undefined;
+  }
+}
+
+// TODO: use middleware
+export async function withUpstreamErrorHandled (cb: () => Promise<Response>): Promise<Response> {
+  try {
+    return cb();
+  } catch (e) {
+    if (e instanceof UpstreamError) {
+      return new Response(JSON.stringify(await e.getUpstreamResponseText()), {
+        status: 500,
+      });
+    } else {
+      throw e;
+    }
   }
 }

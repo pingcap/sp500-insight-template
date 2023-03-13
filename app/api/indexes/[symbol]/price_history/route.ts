@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon';
 import { NextRequest, NextResponse } from 'next/server';
 import { getDurationParams, Unit } from '@/app/api/duration-utils';
-import { executeEndpoint } from '@/datasource/data-api';
+import { executeEndpoint, withUpstreamErrorHandled } from '@/datasource/data-api';
 import HistoryPriceDailyEndpoint from '@/datasource/indexes/history_price/daily';
 import HistoryPriceWeeklyEndpoint from '@/datasource/indexes/history_price/weekly';
 import HistoryPriceNowEndpoint from '@/datasource/indexes/history_price/now';
@@ -49,6 +49,8 @@ const getPriceHistory = async (symbol: string, n: number | 'CURRENT', unit: Unit
 export async function GET (req: NextRequest, { params }: any) {
   const { n, unit } = getDurationParams(req);
   const { symbol } = params;
-  const result = await getPriceHistory(symbol as string, n, unit);
-  return NextResponse.json(result);
+  return withUpstreamErrorHandled(async () => {
+    const result = await getPriceHistory(symbol as string, n, unit);
+    return NextResponse.json(result);
+  })
 }
