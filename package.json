@@ -29,6 +29,7 @@
     "commander": "^10.0.0",
     "country-code-lookup": "^0.0.22",
     "csv": "^6.2.7",
+    "digest-header": "^1.0.0",
     "echarts": "^5.4.1",
     "eslint": "8.35.0",
     "eslint-config-next": "13.2.3",
