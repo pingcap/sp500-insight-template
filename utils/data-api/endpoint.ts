@@ -64,6 +64,7 @@ export type TransformedResponse<DT extends Record<string, any>, Single extends b
   latency: number
   row_count: number
   row_affect: number
+  meta: any
 }
 
 export function transformResponse<DT extends Record<string, any>> (url: URL, response: GeneralResponse<DT>) {
@@ -77,13 +78,33 @@ export function transformResponse<DT extends Record<string, any>> (url: URL, res
   if (data.err_code !== 0) {
     throw UpstreamError.ofSql(url.toString(), data);
   }
-  return data.rows.map(columns => {
+  const rows = data.rows.map(columns => {
     return columns.reduce((dt: DT, columnData, index) => {
       const column = data.columns[index];
       dt[column.col] = convertValue(columnData, column);
       return dt;
     }, {} as DT);
   });
+  return {
+    ...data,
+    rows
+  }
+}
+
+const metaKeys = [
+  'X-RateLimit-Limit-Minute',
+  'X-RateLimit-Reset',
+  'X-RateLimit-Remaining-Minute',
+  'X-Debug-Trace-Id',
+  'X-Kong-Upstream-Latency',
+  'X-Kong-Proxy-Latency',
+]
+
+export function transformResponseMeta(response: Response) {
+  return metaKeys.reduce((meta, key) => {
+    meta[key] = response.headers.get(key)
+    return meta
+  }, {} as Record<string, any>)
 }
 
 function convertValue (value: any, column: DataColumn<any>): any {

@@ -1,5 +1,5 @@
 import { wrapFetchWithDigestFlow } from '@/utils/digest-auth';
-import { DataApiParams, Endpoint, TransformedResponse, transformResponse } from './endpoint';
+import { DataApiParams, Endpoint, TransformedResponse, transformResponse, transformResponseMeta } from './endpoint';
 import { UpstreamError } from './error';
 import { NextResponse } from 'next/server';
 
@@ -34,18 +34,20 @@ export async function executeEndpoint<Params extends DataApiParams, Data extends
     throw new UpstreamError(`Invalid JSON: ${e}`, url.toString(), response, e);
   }
 
-  const rows = transformResponse<Data>(url, json);
-  const { start_ms, end_ms, latency, row_count, row_affect } = json;
+  const meta = transformResponseMeta(response);
+  const { rows, start_ms, end_ms, latency, row_count, row_affect } = transformResponse<Data>(url, json);
 
   if (endpoint.single) {
     return {
       row: rows[0],
       start_ms, end_ms, latency, row_count, row_affect,
+      meta,
     } as TransformedResponse<Data, Single>;
   } else {
     return {
       rows,
       start_ms, end_ms, latency, row_count, row_affect,
+      meta,
     } as TransformedResponse<Data, Single>;
   }
 }
@@ -60,7 +62,7 @@ export async function withUpstreamErrorHandled (cb: () => Promise<Response>): Pr
         error: 'UPSTREAM_ERROR',
         error_details: await e.getUpstreamResponseText(),
       };
-      console.error('Error from', e.url, e)
+      console.error('Error from', e.url, e);
       return NextResponse.json(errorBody, { status: e.response?.status ?? 500 });
     } else {
       throw e;

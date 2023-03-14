@@ -26,9 +26,14 @@ async function handle (method: QueryMethod, path: string[], params: any, request
   }, endpoints);
   if (isEndpoint(endpoint)) {
     return withUpstreamErrorHandled(async () => {
-      const result = await executeEndpoint(endpoint, params);
-      return NextResponse.json(result);
-    })
+      const { meta, ...result } = await executeEndpoint(endpoint, params);
+      return NextResponse.json(result, {
+        headers: {
+          'X-ENDPOINT': `${endpoint.method} ${endpoint.path}`,
+          ...meta,
+        },
+      });
+    });
   }
 
   return new Response(null, {
@@ -41,7 +46,7 @@ function searchParamsToUrlQuery (searchParams: URLSearchParams) {
   searchParams.forEach((value, key) => {
     if (key === 'id') {
       // NextJS will embed path variable to url?
-      return
+      return;
     }
     const qv = query[key];
     if (typeof qv === 'undefined') {
