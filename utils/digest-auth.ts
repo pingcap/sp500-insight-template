@@ -69,44 +69,49 @@ export function wrapFetchWithDigestFlow (nativeFetch: typeof fetch, config: Dige
 
   async function digestFetch (input: Request | URL | string, init?: RequestInit) {
     const response = await nativeFetch(input, init);
-    if (response.status === 401) {
-      const digestRequest = parseDigestRequest(response);
-      if (digestRequest) {
-        let method: string;
-        let url: URL;
+    const digestRequest = parseDigestRequest(response);
 
-        if (typeof input === 'string') {
-          method = init?.method ?? 'GET';
-          url = new URL(input);
-        } else if ('url' in input) {
-          method = input.method ?? 'GET';
-          url = new URL(input.url);
-        } else {
-          method = init?.method ?? 'GET';
-          url = input;
-        }
-
-        let hash: (content: string) => string;
-
-        switch (digestRequest.algorithm) {
-          case 'MD5':
-            hash = md5;
-            break;
-          default:
-            throw new Error(`Unsupported algorithm '${digestRequest.algorithm}'`);
-        }
-
-        const digestResponse = generateDigestResponse(method, url, digestRequest, config, md5, () => ++nc);
-        const credential = stringify(digestResponse);
-
-        return nativeFetch(input, {
-          ...init,
-          headers: {
-            ...init?.headers,
-            Authorization: credential,
-          },
-        });
+    // if (response.status === 401) {
+    if (digestRequest) {
+      if (response.status !== 401) {
+        console.warn('digest headers returned but status code is', response.status);
       }
+
+      let method: string;
+      let url: URL;
+
+      if (typeof input === 'string') {
+        method = init?.method ?? 'GET';
+        url = new URL(input);
+      } else if ('url' in input) {
+        method = input.method ?? 'GET';
+        url = new URL(input.url);
+      } else {
+        method = init?.method ?? 'GET';
+        url = input;
+      }
+
+      let hash: (content: string) => string;
+
+      switch (digestRequest.algorithm) {
+        case 'MD5':
+          hash = md5;
+          break;
+        default:
+          throw new Error(`Unsupported algorithm '${digestRequest.algorithm}'`);
+      }
+
+      const digestResponse = generateDigestResponse(method, url, digestRequest, config, md5, () => ++nc);
+      const credential = stringify(digestResponse);
+
+      return nativeFetch(input, {
+        ...init,
+        headers: {
+          ...init?.headers,
+          Authorization: credential,
+        },
+      });
+      // }
     }
     return response;
   }
