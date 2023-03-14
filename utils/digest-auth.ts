@@ -1,4 +1,12 @@
 import { createHash, randomBytes } from 'node:crypto';
+import { traceDataApi } from '@/utils/data-api/endpoint';
+import { UpstreamError } from '@/utils/data-api/error';
+
+declare global {
+  interface Response {
+    dataApiTraceIds?: string[];
+  }
+}
 
 type DigestConfig = {
   username: string
@@ -69,12 +77,16 @@ export function wrapFetchWithDigestFlow (nativeFetch: typeof fetch, config: Dige
 
   async function digestFetch (input: Request | URL | string, init?: RequestInit) {
     let response = await nativeFetch(input, init);
+    let traceIds: string[] = [];
+
+    traceDataApi(traceIds, response);
     const digestRequest = parseDigestRequest(response);
 
     // if (response.status === 401) {
     if (digestRequest) {
       if (response.status !== 401) {
-        console.warn('digest headers returned but status code is %s. Digest info: $o', response.status, digestRequest);
+        console.warn('Digest headers returned but status code is %s. URL = %s digest value: %o', response.status, urlStringOf(input), digestRequest);
+        throw UpstreamError.ofHttp(urlStringOf(input), response, `Digest headers returned but status code is ${response.status}. [Url = ${urlStringOf(input)}] [TraceIds = ${response.dataApiTraceIds}] [Response Headers = ${stringifyHeaders(response.headers)}]`);
       }
 
       let method: string;
@@ -111,10 +123,16 @@ export function wrapFetchWithDigestFlow (nativeFetch: typeof fetch, config: Dige
           Authorization: credential,
         },
       });
+      traceDataApi(traceIds, response);
+
       if (!response.ok) {
-        console.warn('Authorization failed req=', digestRequest, 'res=', { ...digestResponse, username: '[[ERASED]]', response: '[[ERASED]]' });
+        console.warn('Authorization failed req:', digestRequest, 'res:', { ...digestResponse, username: '[[ERASED]]', response: '[[ERASED]]' }, 'traceIds:', traceIds);
       }
       // }
+    }
+
+    if (traceIds.length > 0) {
+      response.dataApiTraceIds = traceIds;
     }
     return response;
   }
@@ -128,4 +146,24 @@ function md5 (content: string) {
 
 function stringify (res: DigestResponse) {
   return `Digest username="${res.username}", realm="${res.realm}", nonce="${res.nonce}", uri="${res.uri}", qop=${res.qop}, nc=${res.nc}, cnonce=${res.cnonce}, response=${res.response}`;
+}
+
+function urlStringOf (init: string | Request | URL): string {
+  if (typeof init === 'object') {
+    if ('url' in init) {
+      return init.url.toString();
+    } else {
+      return init.toString();
+    }
+  } else {
+    return init;
+  }
+}
+
+function stringifyHeaders (headers: Headers) {
+  const json: any = {};
+  headers.forEach((value, key) => {
+    json[key] = value
+  });
+  return JSON.stringify(json, undefined, 2)
 }

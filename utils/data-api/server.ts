@@ -61,12 +61,34 @@ export async function withUpstreamErrorHandled (cb: () => Promise<Response>): Pr
       const errorBody = {
         error: 'UPSTREAM_ERROR',
         error_details: await e.getUpstreamResponseText(),
+        dataApiTraceIds: e.response?.dataApiTraceIds,
       };
-      console.error('Error from', e.url, e);
-      return NextResponse.json(errorBody, { status: e.response?.status ?? 500 });
+      console.error('Error from', e.url, e.response?.dataApiTraceIds, e);
+      return NextResponse.json(errorBody, {
+        status: e.response?.ok ? 500 : e.response?.status ?? 500,
+        headers: {
+          'X-App-Upstream-TraceIds': e.response?.dataApiTraceIds?.join(', ') ?? 'None',
+        },
+      });
     } else {
       throw e;
     }
+  }
+}
+
+export async function withUpstreamErrorLogged<T> (cb: () => Promise<T>): Promise<T> {
+  try {
+    return await cb();
+  } catch (e) {
+    if (e instanceof UpstreamError) {
+      const errorBody = {
+        error: 'UPSTREAM_ERROR',
+        error_details: await e.getUpstreamResponseText(),
+        dataApiTraceIds: e.response?.dataApiTraceIds,
+      };
+      console.error('Error from', e.url, e.response?.dataApiTraceIds, e);
+    }
+    throw e;
   }
 }
 

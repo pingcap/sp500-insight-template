@@ -5,8 +5,8 @@ export class UpstreamError extends Error {
     super(message);
   }
 
-  static ofHttp (url: string, response: Response) {
-    const message = `${response.status} ${response.statusText}`;
+  static ofHttp (url: string, response: Response, message?: string) {
+    message = message ?? `${response.status} ${response.statusText}`;
 
     return new UpstreamError(message, url, response);
   }

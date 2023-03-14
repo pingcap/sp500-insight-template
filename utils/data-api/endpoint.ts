@@ -87,8 +87,8 @@ export function transformResponse<DT extends Record<string, any>> (url: URL, res
   });
   return {
     ...data,
-    rows
-  }
+    rows,
+  };
 }
 
 const metaKeys = [
@@ -98,13 +98,13 @@ const metaKeys = [
   'X-Debug-Trace-Id',
   'X-Kong-Upstream-Latency',
   'X-Kong-Proxy-Latency',
-]
+];
 
-export function transformResponseMeta(response: Response) {
+export function transformResponseMeta (response: Response) {
   return metaKeys.reduce((meta, key) => {
-    meta[key] = response.headers.get(key)
-    return meta
-  }, {} as Record<string, any>)
+    meta[key] = response.headers.get(key);
+    return meta;
+  }, {} as Record<string, any>);
 }
 
 function convertValue (value: any, column: DataColumn<any>): any {
@@ -129,4 +129,11 @@ export function isEndpoint (v: unknown): v is Endpoint<any, any> {
     return false;
   }
   return !!(v as any)[SYMBOL_ENDPOINT];
+}
+
+export function traceDataApi (ids: string[], response: Response) {
+  const id = response.headers.get('X-Debug-Trace-Id');
+  if (id) {
+    ids.push(id);
+  }
 }

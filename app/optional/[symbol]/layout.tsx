@@ -1,6 +1,6 @@
 import { FC, PropsWithChildren, ReactNode, Suspense, use } from 'react';
 import CompanyOverview from '@/components/CompanyOverview';
-import { dataOf, executeEndpoint } from '@/utils/data-api/server';
+import { dataOf, executeEndpoint, withUpstreamErrorLogged } from '@/utils/data-api/server';
 import endpoints from '@/datasource/endpoints';
 
 const Layout: FC<PropsWithChildren<{ params: { symbol: string } }>> = ({ children, params: { symbol } }) => {
@@ -16,7 +16,7 @@ const Layout: FC<PropsWithChildren<{ params: { symbol: string } }>> = ({ childre
 };
 
 const CompanyOverviewInternal: FC<{ symbol: string, children: ReactNode }> = ({ symbol, children }) => {
-  const company = dataOf(use(executeEndpoint(endpoints.stock.info.GET, { stock_symbol: symbol })));
+  const company = dataOf(use(withUpstreamErrorLogged(() => executeEndpoint(endpoints.stock.info.GET, { stock_symbol: symbol }))));
   return (
     <CompanyOverview company={company}>
       {children}
