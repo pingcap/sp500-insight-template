@@ -1,12 +1,7 @@
-import { NextRequest } from 'next/server';
-import URL from 'node:url';
-
 type N = number | 'CURRENT';
 export type Unit = 'DAY' | 'MONTH' | 'YEAR'
 
-export function getDurationParams (req: NextRequest) {
-  const url = new URL.URL(req.url);
-  const duration = url.searchParams.get('duration') ?? '6M';
+export function getDurationParams (duration: string = '6M') {
   let n: N;
   let unit: Unit;
   const matched = duration.match(/^(\d+)([YMD])$/);

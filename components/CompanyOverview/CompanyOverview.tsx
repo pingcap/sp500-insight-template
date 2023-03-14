@@ -1,6 +1,7 @@
 import { FC, ReactNode } from 'react';
-import { CompanyInfo } from '@/datasource/stocks';
 import { SkeletonInline, SkeletonParagraph } from '@/components/Skeleton';
+import { EndpointData } from '@/utils/data-api/endpoint';
+import endpoints from '@/datasource/endpoints';
 
 export interface CompanyOverviewProps {
   company?: CompanyInfo;
@@ -78,6 +79,8 @@ const CompanyOverview: FC<CompanyOverviewProps> = ({ company, children }) => {
 };
 
 export default CompanyOverview;
+
+type CompanyInfo = EndpointData<typeof endpoints.stock.info.GET>
 
 function getSectorIndustryLine (company: CompanyInfo) {
   return [company.sector, company.industry].join(' / ');

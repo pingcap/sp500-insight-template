@@ -1,11 +1,16 @@
 'use client';
 import { FC } from 'react';
 import './common.css';
-import useSWR from 'swr';
 import ECharts, { useECharts } from '@/components/ECharts';
+import { useEndpoint } from '@/utils/data-api/client';
+import endpoints from '@/datasource/endpoints';
+import { EndpointData } from '@/utils/data-api/endpoint';
+import { useTransform } from '@/utils/hook';
 
 const IndustryDistribution: FC<{ index: string }> = ({ index }) => {
-  const { data, isLoading } = useSWR([index, 'sidistribution'], fetchData);
+  const { data: raw, isLoading } = useEndpoint(endpoints.index.sector_industry_distribution.GET, { index_symbol: index });
+  const data = useTransform(raw, transform);
+
   const { ref, useOption } = useECharts();
   useOption(() => ({
     grid: {
@@ -84,14 +89,6 @@ type Tree = {
   value?: number
 }
 
-type Record = {
-  industry: string
-  sector: string
-  stock_symbol: string
-  trend: 1 | 0 | -1
-  weight: number
-}
-
 type TransformedRecord = {
   name: string
   children: {
@@ -104,9 +101,9 @@ type TransformedRecord = {
   }[]
 }
 
-function transform (records: Record[]): TransformedRecord[] {
+function transform (records?: EndpointData<typeof endpoints.index.sector_industry_distribution.GET>): TransformedRecord[] {
   const res: TransformedRecord[] = [];
-  for (const { industry, sector, stock_symbol, weight, trend } of records) {
+  for (const { industry, sector, stock_symbol, weight, trend } of records ?? []) {
     let s = res.find(s => s.name === sector);
     if (!s) {
       res.push(s = { name: sector, children: [] });
@@ -128,21 +125,3 @@ function transform (records: Record[]): TransformedRecord[] {
 
   return res;
 }
-
-function getColor (val: number) {
-  if (val > 0) {
-    return 'red';
-  } else if (val === 0) {
-    return 'grey';
-  } else {
-    return 'green';
-  }
-}
-
-async function fetchData ([index]: [string]): Promise<TransformedRecord[]> {
-  const res = await fetch(`/api/indexes/${index}/sector_industry_distribution`);
-  const { rows } = await res.json();
-  return transform(rows);
-}
-
-

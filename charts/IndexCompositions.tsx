@@ -1,14 +1,15 @@
 'use client';
-import { FC, useMemo, useState } from 'react';
-import useSWR from 'swr';
+import { FC } from 'react';
 import Stocks from '@/components/Stocks';
+import { useEndpoint } from '@/utils/data-api/client';
+import endpoints from '@/datasource/endpoints';
 
 const IndexCompositions: FC<{ index: string }> = ({ index }) => {
-  const { data = [], isLoading } = useSWR([index, 'compositions'], compositions);
+  const { data = [], isLoading } = useEndpoint(endpoints.index.compositions.GET, { index_symbol: index });
 
   return (
     <>
-      <Stocks className='h-[400px]' stocks={data} href='/optional/<symbol>' loading={isLoading && 5} />
+      <Stocks className="h-[400px]" stocks={data} href="/optional/<symbol>" loading={isLoading && 5} />
     </>
   );
 };
@@ -25,14 +26,3 @@ type IndexCompositionRecord = {
   stock_symbol: string
   weight: number
 }
-
-export const compositions = async ([index]: [string]): Promise<IndexCompositionRecord[]> => {
-  const res = await fetch(`/api/indexes/${index}/compositions`);
-  const { rows } = await res.json();
-  return rows.map(({ last_2nd_close_price, last_change_percentage, last_close_price, ...rest }: any) => ({
-    ...rest,
-    last_2nd_close_price: parseFloat(last_2nd_close_price),
-    last_change_percentage: parseFloat(last_change_percentage),
-    last_close_price: parseFloat(last_close_price),
-  }));
-};

@@ -2,10 +2,13 @@
 import { FC } from 'react';
 import ECharts, { useECharts } from '@/components/ECharts';
 import { CallbackDataParams } from 'echarts/types/dist/shared';
-import useSWR from 'swr';
 import DurationToggleGroup from '@/components/DurationToggleGroup';
 import { useSearchParam } from '@/utils/hook';
 import { useSelectedLayoutSegment } from 'next/navigation';
+import { EndpointArgs, useComposedEndpoint, useEndpoint } from '@/utils/data-api/client';
+import endpoints from '@/datasource/endpoints';
+import { DateTime } from 'luxon';
+import { getDurationParams } from '@/app/api/duration-utils';
 
 interface StockOverviewProps {
   symbol?: string,
@@ -15,10 +18,14 @@ const StockOverview: FC<StockOverviewProps> = ({ symbol: propSymbol }) => {
   const symbol = useSelectedLayoutSegment() ?? propSymbol;
   const { ref, useOption } = useECharts();
   const [duration, setDuration] = useSearchParam('duration');
-  const { data = [], isLoading } = useSWR([symbol, duration, 'stock'], {
-    fetcher: fetchData,
-    revalidateOnStale: false,
+  const { data: summary } = useEndpoint(endpoints.stock.summary.GET, symbol ? { stock_symbol: symbol } : undefined);
+  const { data = [], isLoading } = useComposedEndpoint(historyPriceEndpoint, {
+    date_now: summary?.last_change_day,
+    symbol,
+    duration,
+  }, {
     keepPreviousData: true,
+    revalidateIfStale: false,
   });
 
   useOption(() => ({
@@ -160,3 +167,46 @@ const sdf = Intl.DateTimeFormat('en', { dateStyle: 'short' });
 function fmtDate (date: string) {
   return sdf.format(new Date(date));
 }
+
+const historyPriceEndpoint = ({ date_now, symbol, duration }: { date_now: string | undefined, symbol: string | undefined, duration?: string | null }) => {
+  const fmt = 'yyyy-MM-dd';
+  if (!date_now) {
+    return undefined;
+  }
+
+  const now = DateTime.fromFormat(date_now, fmt);
+  const { n, unit } = getDurationParams(duration ?? '6M');
+
+  let start: DateTime;
+  let end = now;
+  let endpoint: typeof endpoints.stock.history_price.weekly.GET;
+
+  if (n === 'CURRENT') {
+    endpoint = endpoints.stock.history_price.daily.GET;
+    start = now.startOf('year');
+  } else if (unit === 'YEAR' && n > 1) {
+    endpoint = endpoints.stock.history_price.weekly.GET;
+    start = now.minus({ year: n });
+  } else {
+    endpoint = endpoints.stock.history_price.daily.GET;
+    switch (unit) {
+      case 'YEAR':
+        start = now.minus({ year: n });
+        break;
+      case 'MONTH':
+        start = now.minus({ month: n });
+        break;
+      case 'DAY':
+        start = now.minus({ day: n });
+        break;
+      default:
+        throw new Error('Unknown unit');
+    }
+  }
+
+  return [endpoint, {
+    start_date: start.toFormat(fmt),
+    end_date: end.toFormat(fmt),
+    stock_symbol: symbol,
+  }] as EndpointArgs<typeof endpoints.stock.history_price.weekly.GET>;
+};

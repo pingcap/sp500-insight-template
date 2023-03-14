@@ -1,10 +1,11 @@
 import { FC } from 'react';
 import ECharts, { useECharts } from '@/components/ECharts';
-import useSWR from 'swr';
+import { useEndpoint } from '@/utils/data-api/client';
+import endpoints from '@/datasource/endpoints';
 
 const IndexCompositionExchangeDistribution: FC<{ index: string }> = ({ index }) => {
   const { ref, useOption } = useECharts();
-  const { data = [] } = useSWR([index, 'exchangeDistribution'], fetchData);
+  const { data = [], isLoading } = useEndpoint(endpoints.index.compositions.exchange_distribution.GET, { index_symbol: index });
 
   useOption(() => ({
     grid: {
@@ -19,8 +20,8 @@ const IndexCompositionExchangeDistribution: FC<{ index: string }> = ({ index }) 
       top: 'center',
       orient: 'vertical',
       textStyle: {
-        color: '#777'
-      }
+        color: '#777',
+      },
     },
     series: {
       type: 'pie',
@@ -42,7 +43,7 @@ const IndexCompositionExchangeDistribution: FC<{ index: string }> = ({ index }) 
       minAngle: 5,
       label: {
         textBorderWidth: 0,
-        color: '#777'
+        color: '#777',
       },
     },
   }));
@@ -56,19 +57,7 @@ const IndexCompositionExchangeDistribution: FC<{ index: string }> = ({ index }) 
     },
   }), [data]);
 
-  return <ECharts ref={ref} className="h-[400px]" />;
+  return <ECharts ref={ref} className="h-[400px]" loading={isLoading} />;
 };
 
 export default IndexCompositionExchangeDistribution;
-
-type DistributionRecord = {
-  exchange_symbol: string
-  companies: number
-}
-
-const fetchData = async ([index]: [string]): Promise<DistributionRecord[]> => {
-  const res = await fetch(`/api/indexes/${index}/compositions/exchange_distribution`);
-  const { rows } = await res.json();
-
-  return rows;
-};

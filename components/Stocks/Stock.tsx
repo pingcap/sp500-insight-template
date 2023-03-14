@@ -5,9 +5,10 @@ import clsx from 'clsx';
 import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/20/solid';
 import { useSelectedLayoutSegment } from 'next/navigation';
 import { SkeletonInline } from '@/components/Skeleton';
-import { unique } from '@/datasource/query';
 import { useAuto } from '@/utils/hook';
 import { PendingPercentTag } from './StockSkeleton';
+import { clientEndpointFetcher } from '@/utils/data-api/client';
+import endpoints from '@/datasource/endpoints';
 
 export interface UnresolvedStockItem {
   stock_symbol: string;
@@ -80,9 +81,8 @@ Stock.displayName = 'Stock';
 
 export default Stock;
 
-const fetchStockSummary = async (stock: UnresolvedStockItem): Promise<StockItem> => {
-  const res = await fetch(`/api/stocks/${stock.stock_symbol}/summary`);
-  return unique(await res.json());
+const fetchStockSummary = async (stock: UnresolvedStockItem) => {
+  return await clientEndpointFetcher([endpoints.stock.summary.GET, { stock_symbol: stock.stock_symbol }])
 };
 
 const PercentTag = ({ value }: { value: number }) => {

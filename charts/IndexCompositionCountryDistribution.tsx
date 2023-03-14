@@ -1,8 +1,11 @@
 import { FC } from 'react';
 import ECharts, { useECharts } from '@/components/ECharts';
-import useSWR from 'swr';
 import { byIso } from 'country-code-lookup';
 import { worldMapSeries } from '@/components/ECharts/map';
+import { useEndpoint } from '@/utils/data-api/client';
+import endpoints from '@/datasource/endpoints';
+import { EndpointData } from '@/utils/data-api/endpoint';
+import { useTransform } from '@/utils/hook';
 
 interface GeoDistributionProps {
   index: string;
@@ -10,7 +13,8 @@ interface GeoDistributionProps {
 
 const IndexCompositionCountryDistribution: FC<GeoDistributionProps> = ({ index }) => {
   const { ref, useOption } = useECharts();
-  const { data = [] } = useSWR([index, 'countryDistribution'], fetchData);
+  const { data: raw = [], isLoading } = useEndpoint(endpoints.index.compositions.country_distribution.GET, { index_symbol: index });
+  const data = useTransform(raw, transform);
 
   useOption(() => ({
     legend: {},
@@ -41,32 +45,27 @@ const IndexCompositionCountryDistribution: FC<GeoDistributionProps> = ({ index }
         },
       })),
       tooltip: {
-        formatter: '{c} companies from {b}'
-      }
+        formatter: '{c} companies from {b}',
+      },
     },
   }), [data]);
 
   return (
-    <ECharts className="aspect-[4/3]" ref={ref} />
+    <ECharts className="aspect-[4/3]" ref={ref} loading={isLoading} />
   );
 };
 
 export default IndexCompositionCountryDistribution;
 
-type GeoData = {
-  country_code: string
-  companies: number
-}
+type GeoData = EndpointData<typeof endpoints.index.compositions.country_distribution.GET>[number]
 
-const fetchData = async ([index]: [string]): Promise<GeoData[]> => {
-  const res = await fetch(`/api/indexes/${index}/compositions/country_distribution`);
-  const { rows } = await res.json();
-  return rows.map(({ country_code, ...rest }: any) => ({
+function transform (rows: GeoData[]) {
+  return rows.map(({ country_code, ...rest }) => ({
     country_code: byIso(country_code)?.iso3,
     ...rest,
   }))
-    .filter((item: any) => item.country_code);
-};
+    .filter((item): item is GeoData => !!item.country_code);
+}
 
 function mixColor (a: [number, number, number], b: [number, number, number], f: number): string {
   const g = 1 - f;

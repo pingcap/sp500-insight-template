@@ -4,13 +4,13 @@ import List, { ListSearch } from '@/components/List';
 import Stock, { AnyStockItem } from './Stock';
 import StockContextMenu from './StockMenu';
 import StockOverlay from './StockOverlay';
-import useSWR from 'swr';
-import { compositions } from '@/charts/IndexCompositions';
 import Scrollable from '@/components/Scrollable';
 import clsx from 'clsx';
 import { useSelectedLayoutSegment } from 'next/navigation';
 import { useRefCallback } from '@/utils/hook';
 import StockSkeleton from '@/components/Stocks/StockSkeleton';
+import { useComposedEndpoint } from '@/utils/data-api/client';
+import endpoints from '@/datasource/endpoints';
 
 export interface StocksProps {
   className?: string;
@@ -29,7 +29,7 @@ const Stocks: FC<StocksProps> = ({ className, stocks: propStocks, href, userId, 
   const [stocks, setStocks] = useState(propStocks);
   const { hasOperations, onAdd, ...operations } = useStockOperations(userId, setStocks);
 
-  const { data: all = [] } = useSWR(filterTriggered && hasOperations ? ['SP500', 'compositions'] : undefined, compositions);
+  const { data: all = [] } = useComposedEndpoint((go) => go ? [endpoints.index.compositions.GET, { index_symbol: 'SP500' }] : undefined, filterTriggered && hasOperations);
 
   useEffect(() => {
     if (propStocks !== stocks) {

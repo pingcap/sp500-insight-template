@@ -1,7 +1,6 @@
 'use client';
 
 import { FC, useMemo } from 'react';
-import useSWR from 'swr';
 import ECharts, { useECharts } from '@/components/ECharts';
 import { graphic } from 'echarts';
 import './common.css';
@@ -9,12 +8,24 @@ import clsx from 'clsx';
 import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/20/solid';
 import { useSearchParam } from '@/utils/hook';
 import DurationToggleGroup from '@/components/DurationToggleGroup';
+import { EndpointArgs, useComposedEndpoint, useEndpoint } from '@/utils/data-api/client';
+import endpoints from '@/datasource/endpoints';
+import { DateTime } from 'luxon';
+import { getDurationParams } from '@/app/api/duration-utils';
+import { EndpointData } from '@/utils/data-api/endpoint';
 
 const IndexOverview: FC<{ index: string }> = ({ index }) => {
   const [duration, setDuration] = useSearchParam('duration');
   const { ref, useOption } = useECharts();
-  const { data: priceHistoryRecords = [], isLoading: priceHistoryLoading } = useSWR([index, duration, 'priceHistory'], { fetcher: priceHistory, keepPreviousData: true });
-  const { data: latestPriceRecord } = useSWR([index, 'latestPrice'], latestPrice);
+
+  const { data: latestPriceRecord } = useEndpoint(endpoints.index.latest_price.GET, { index_symbol: index });
+  const { data: priceHistoryRecords = [], isLoading: priceHistoryLoading } = useComposedEndpoint(historyPriceEndpoint, {
+    date_now: latestPriceRecord?.last_updated_at,
+    duration,
+    symbol: index,
+  }, {
+    keepPreviousData: true,
+  });
 
   const today = latestPriceRecord?.last_updated_at ? new Date(latestPriceRecord.last_updated_at) : '--';
 
@@ -120,7 +131,7 @@ const IndexOverview: FC<{ index: string }> = ({ index }) => {
       <div className="flex flex-col mb-4">
         <span>
           <span className="text-significant text-5xl">
-            {priceHistoryRecords[0]?.['price']}
+            {priceHistoryRecords[0]?.['price'] ?? latestPriceRecord?.last_1st_price}
           </span>
           <span className={clsx(increased ? 'text-red-600' : 'text-green-600', 'text-2xl px-2')}>
             <span className={clsx(increased ? 'bg-red-600' : 'bg-green-600', 'bg-opacity-20 rounded-xl px-2 py-1 tex')}>
@@ -143,45 +154,7 @@ const IndexOverview: FC<{ index: string }> = ({ index }) => {
 
 export default IndexOverview;
 
-type IndexHistoryPriceRecord = {
-  record_date: string
-  price: number
-}
-type IndexLatestPrice = {
-  last_updated_at: string
-  last_1st_price: number
-  last_2nd_price: number
-  last_changes: number
-}
-
-const priceHistory = async ([index, duration]: [string, string]): Promise<IndexHistoryPriceRecord[]> => {
-  const resp = await fetch(`/api/indexes/${index}/price_history?duration=${duration}`);
-  const { rows } = await resp.json();
-  return rows.map(({ record_date, price }: any) => ({
-    record_date,
-    price: parseFloat(price),
-  }));
-};
-
-const latestPrice = async ([index]: [string]): Promise<IndexLatestPrice> => {
-  const resp = await fetch(`/api/indexes/${index}/latest_price`);
-  const {
-    rows: [{
-      last_updated_at,
-      last_1st_price,
-      last_2nd_price,
-      last_changes,
-    }],
-  } = await resp.json();
-  return {
-    last_updated_at,
-    last_1st_price: parseFloat(last_1st_price),
-    last_2nd_price: parseFloat(last_2nd_price),
-    last_changes: parseFloat(last_changes),
-  };
-};
-
-function getMinPrice (records: IndexHistoryPriceRecord[]): number {
+function getMinPrice (records: EndpointData<typeof endpoints.index.history_price.weekly.GET>): number {
   const n = records.reduce((min, record) => Math.min(min, record.price), Infinity);
   if (isFinite(n)) {
     let i = 10;
@@ -194,11 +167,11 @@ function getMinPrice (records: IndexHistoryPriceRecord[]): number {
       if (n - m > i * 3 / 4) {
         return m + i * 3 / 4;
       } else {
-        return m + i / 2
+        return m + i / 2;
       }
     } else {
       if (n - m > i / 4) {
-        return m + i / 4
+        return m + i / 4;
       } else {
         return m;
       }
@@ -210,3 +183,45 @@ function getMinPrice (records: IndexHistoryPriceRecord[]): number {
 
 const dtf = new Intl.DateTimeFormat('en', { dateStyle: 'long', timeStyle: 'long' });
 
+const historyPriceEndpoint = ({ date_now, symbol, duration }: { date_now: string | undefined, symbol: string, duration?: string | null }) => {
+  const fmt = 'yyyy-MM-dd';
+  if (!date_now) {
+    return undefined;
+  }
+
+  const now = DateTime.fromFormat(date_now, fmt);
+  const { n, unit } = getDurationParams(duration ?? '6M');
+
+  let start: DateTime;
+  let end = now;
+  let endpoint: typeof endpoints.index.history_price.weekly.GET;
+
+  if (n === 'CURRENT') {
+    endpoint = endpoints.index.history_price.daily.GET;
+    start = now.startOf('year');
+  } else if (unit === 'YEAR' && n > 1) {
+    endpoint = endpoints.index.history_price.weekly.GET;
+    start = now.minus({ year: n });
+  } else {
+    endpoint = endpoints.index.history_price.daily.GET;
+    switch (unit) {
+      case 'YEAR':
+        start = now.minus({ year: n });
+        break;
+      case 'MONTH':
+        start = now.minus({ month: n });
+        break;
+      case 'DAY':
+        start = now.minus({ day: n });
+        break;
+      default:
+        throw new Error('Unknown unit');
+    }
+  }
+
+  return [endpoint, {
+    start_date: start.toFormat(fmt),
+    end_date: end.toFormat(fmt),
+    index_symbol: symbol,
+  }] as EndpointArgs<typeof endpoints.index.history_price.weekly.GET>;
+};

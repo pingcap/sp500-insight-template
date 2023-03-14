@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { DependencyList, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 export function useRefCallback<T extends (...args: any) => any> (cb: T) {
@@ -64,4 +64,14 @@ export function useAuto<Unresolved, Resolved extends Unresolved> (value: Resolve
   }, [tried, storeValue]);
 
   return storeValue;
+}
+
+export function useTransform<T, R> (t: T, transformer: (raw: T) => R, dependencyList?: DependencyList) {
+  return useMemo(
+    () => {
+      return transformer(t);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    dependencyList ?? [t],
+  );
 }

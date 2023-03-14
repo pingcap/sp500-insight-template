@@ -1,7 +1,7 @@
 import { FC, PropsWithChildren, ReactNode, Suspense, use } from 'react';
-import { unique } from '@/datasource/query';
-import { getStockInfo } from '@/datasource/stocks';
 import CompanyOverview from '@/components/CompanyOverview';
+import { dataOf, executeEndpoint } from '@/utils/data-api/server';
+import endpoints from '@/datasource/endpoints';
 
 const Layout: FC<PropsWithChildren<{ params: { symbol: string } }>> = ({ children, params: { symbol } }) => {
   return (
@@ -16,7 +16,7 @@ const Layout: FC<PropsWithChildren<{ params: { symbol: string } }>> = ({ childre
 };
 
 const CompanyOverviewInternal: FC<{ symbol: string, children: ReactNode }> = ({ symbol, children }) => {
-  const company = unique(use(getStockInfo(symbol)));
+  const company = dataOf(use(executeEndpoint(endpoints.stock.info.GET, { stock_symbol: symbol })));
   return (
     <CompanyOverview company={company}>
       {children}
