@@ -74,7 +74,7 @@ export function wrapFetchWithDigestFlow (nativeFetch: typeof fetch, config: Dige
     // if (response.status === 401) {
     if (digestRequest) {
       if (response.status !== 401) {
-        console.warn('digest headers returned but status code is', response.status);
+        console.warn('digest headers returned but status code is %s. Digest info: $o', response.status, digestRequest);
       }
 
       let method: string;
