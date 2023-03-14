@@ -68,7 +68,7 @@ export function wrapFetchWithDigestFlow (nativeFetch: typeof fetch, config: Dige
   let nc = 0;
 
   async function digestFetch (input: Request | URL | string, init?: RequestInit) {
-    const response = await nativeFetch(input, init);
+    let response = await nativeFetch(input, init);
     const digestRequest = parseDigestRequest(response);
 
     // if (response.status === 401) {
@@ -104,13 +104,16 @@ export function wrapFetchWithDigestFlow (nativeFetch: typeof fetch, config: Dige
       const digestResponse = generateDigestResponse(method, url, digestRequest, config, md5, () => ++nc);
       const credential = stringify(digestResponse);
 
-      return nativeFetch(input, {
+      response = await nativeFetch(input, {
         ...init,
         headers: {
           ...init?.headers,
           Authorization: credential,
         },
       });
+      if (!response.ok) {
+        console.warn('Authorization failed req=', digestRequest, 'res=', { ...digestResponse, username: '[[ERASED]]', response: '[[ERASED]]' });
+      }
       // }
     }
     return response;
