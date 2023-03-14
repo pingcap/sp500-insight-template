@@ -39,6 +39,10 @@ async function handle (method: QueryMethod, path: string[], params: any, request
 function searchParamsToUrlQuery (searchParams: URLSearchParams) {
   const query: Record<string, string | string[]> = {};
   searchParams.forEach((value, key) => {
+    if (key === 'id') {
+      // NextJS will embed path variable to url?
+      return
+    }
     const qv = query[key];
     if (typeof qv === 'undefined') {
       query[key] = value;
