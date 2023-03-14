@@ -66,16 +66,16 @@ export type TransformedResponse<DT extends Record<string, any>, Single extends b
   row_affect: number
 }
 
-export function transformResponse<DT extends Record<string, any>> (response: GeneralResponse<DT>) {
+export function transformResponse<DT extends Record<string, any>> (url: URL, response: GeneralResponse<DT>) {
   if (response.code !== 200) {
-    throw UpstreamError.ofResponse(response);
+    throw UpstreamError.ofResponse(url.toString(), response);
   }
   const [data] = response.data;
   if (!data) {
     throw new Error('Invalid data api response');
   }
   if (data.err_code !== 0) {
-    throw UpstreamError.ofSql(data);
+    throw UpstreamError.ofSql(url.toString(), data);
   }
   return data.rows.map(columns => {
     return columns.reduce((dt: DT, columnData, index) => {

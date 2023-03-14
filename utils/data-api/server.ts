@@ -24,17 +24,17 @@ export async function executeEndpoint<Params extends DataApiParams, Data extends
   });
 
   if (!response.ok) {
-    throw UpstreamError.ofHttp(response);
+    throw UpstreamError.ofHttp(url.toString(), response);
   }
 
   let json: any;
   try {
     json = await response.json();
   } catch (e) {
-    throw new UpstreamError(`Invalid JSON: ${e}`, response, e);
+    throw new UpstreamError(`Invalid JSON: ${e}`, url.toString(), response, e);
   }
 
-  const rows = transformResponse<Data>(json);
+  const rows = transformResponse<Data>(url, json);
   const { start_ms, end_ms, latency, row_count, row_affect } = json;
 
   if (endpoint.single) {
@@ -60,6 +60,7 @@ export async function withUpstreamErrorHandled (cb: () => Promise<Response>): Pr
         error: 'UPSTREAM_ERROR',
         error_details: await e.getUpstreamResponseText(),
       };
+      console.error('Error from', e.url, e)
       return NextResponse.json(errorBody, { status: e.response?.status ?? 500 });
     } else {
       throw e;
