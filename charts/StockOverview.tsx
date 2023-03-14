@@ -170,7 +170,7 @@ function fmtDate (date: string) {
 
 const historyPriceEndpoint = ({ date_now, symbol, duration }: { date_now: string | undefined, symbol: string | undefined, duration?: string | null }) => {
   const fmt = 'yyyy-MM-dd';
-  if (!date_now) {
+  if (!date_now || !symbol) {
     return undefined;
   }
 
