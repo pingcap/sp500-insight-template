@@ -4,7 +4,8 @@ import endpoints from '@/datasource/endpoints';
 import { executeEndpoint, withUpstreamErrorHandled } from '@/utils/data-api/server';
 
 export function GET (request: NextRequest, { params }: { params: { id: string[] } }) {
-  const queryParams = searchParamsToUrlQuery(request.nextUrl.searchParams);
+  const { searchParams } = new URL(request.url);
+  const queryParams = searchParamsToUrlQuery(searchParams);
   return handle('GET', params.id, queryParams, request);
 }
 
