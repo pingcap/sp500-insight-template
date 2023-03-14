@@ -21,6 +21,7 @@ export async function executeEndpoint<Params extends DataApiParams, Data extends
 
   const response = await digestFetch(url, {
     method: endpoint.method,
+    cache: 'no-cache',
   });
 
   if (!response.ok) {
