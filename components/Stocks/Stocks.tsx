@@ -40,7 +40,7 @@ const Stocks: FC<StocksProps> = ({ className, href, userId, stocks: propStocks, 
 
   const { hasOperations, onAdd, ...operations } = useStockOperations(userId, setStocks);
 
-  const { data: all = [] } = useComposedEndpoint((go) => go ? [endpoints.index.compositions.GET, { index_symbol: 'SP500' }] : undefined, filterTriggered && hasOperations);
+  const { data: all = [], isLoading } = useComposedEndpoint((go) => go ? [endpoints.index.compositions.GET, { index_symbol: 'SP500' }] : undefined, filterTriggered && hasOperations);
 
   const handleFilterChange = useRefCallback((value: string) => {
     setFilter(value);
@@ -91,6 +91,9 @@ const Stocks: FC<StocksProps> = ({ className, href, userId, stocks: propStocks, 
           ))}
           {loading && Array(loading).fill(null).map((_, i) => (
             <StockSkeleton key={i} />
+          ))}
+          {isLoading && Array(3).fill(null).map((_, i) => (
+            <StockSkeleton key={'l' + i} />
           ))}
         </List>
       </Scrollable>

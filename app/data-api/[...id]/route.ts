@@ -30,6 +30,7 @@ async function handle (method: QueryMethod, path: string[], params: any, request
       return NextResponse.json(result, {
         headers: {
           'X-ENDPOINT': `${endpoint.method} ${endpoint.path}`,
+          'X-ENDPOINT-PARAMS': `${JSON.stringify(params)}`,
           ...meta,
         },
       });
