@@ -101,10 +101,15 @@ const metaKeys = [
 ];
 
 export function transformResponseMeta (response: Response) {
-  return metaKeys.reduce((meta, key) => {
+  const meta = metaKeys.reduce((meta, key) => {
     meta[key] = response.headers.get(key);
     return meta;
   }, {} as Record<string, any>);
+
+  if (response.dataApiTraceIds) {
+    meta['X-App-Debug-Trace-Sequence'] = response.dataApiTraceIds.join(', ');
+  }
+  return meta;
 }
 
 function convertValue (value: any, column: DataColumn<any>): any {
