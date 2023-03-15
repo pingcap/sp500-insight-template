@@ -33,7 +33,7 @@ const StockSkeleton: FC = () => {
 
 export const PendingPercentTag = () => {
   return (
-    <span className="inline-flex items-center justify-end text-significant rounded px-1 min-w-[80px] bg-[#888]">
+    <span className="skeleton-primitive inline-flex items-center justify-end text-significant rounded px-1 min-w-[80px] bg-[#888]">
       --
     </span>
   );

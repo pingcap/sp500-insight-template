@@ -1,7 +1,7 @@
 'use client';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import List, { ListSearch } from '@/components/List';
-import Stock, { AnyStockItem } from './Stock';
+import Stock, { AnyStockItem, StockItem } from './Stock';
 import StockContextMenu from './StockMenu';
 import StockOverlay from './StockOverlay';
 import Scrollable from '@/components/Scrollable';
@@ -11,31 +11,31 @@ import { useRefCallback } from '@/utils/hook';
 import StockSkeleton from '@/components/Stocks/StockSkeleton';
 import { useComposedEndpoint } from '@/utils/data-api/client';
 import endpoints from '@/datasource/endpoints';
+import stocksStore from '@/components/Stocks/stocks-store';
 
 export interface StocksProps {
   className?: string;
-  stocks: AnyStockItem[];
   href?: string;
   userId?: number;
   searchPlaceholder?: string;
   loading?: number | false;
 }
 
-const Stocks: FC<StocksProps> = ({ className, stocks: propStocks, href, userId, searchPlaceholder, loading }: StocksProps) => {
+const Stocks: FC<StocksProps> = ({ className, href, userId, searchPlaceholder, loading }: StocksProps) => {
   const currentSymbol = useSelectedLayoutSegment();
 
   const [filterTriggered, setFilterTriggered] = useState(false);
   const [filter, setFilter] = useState('');
-  const [stocks, setStocks] = useState(propStocks);
+  const [stocks, setStocks] = useState<AnyStockItem[]>([]);
+
+  useEffect(() => {
+    // Client only
+    setStocks(stocksStore.get().map(stock_symbol => ({ stock_symbol })));
+  }, []);
+
   const { hasOperations, onAdd, ...operations } = useStockOperations(userId, setStocks);
 
   const { data: all = [] } = useComposedEndpoint((go) => go ? [endpoints.index.compositions.GET, { index_symbol: 'SP500' }] : undefined, filterTriggered && hasOperations);
-
-  useEffect(() => {
-    if (propStocks !== stocks) {
-      setStocks(propStocks);
-    }
-  }, [propStocks]);
 
   const handleFilterChange = useRefCallback((value: string) => {
     setFilter(value);
@@ -57,6 +57,10 @@ const Stocks: FC<StocksProps> = ({ className, stocks: propStocks, href, userId, 
     return !!stocks.find(s => s.stock_symbol === symbol);
   }, [stocks]);
 
+  const handleStockInfoLoad = useCallback((stock: StockItem) => {
+    setStocks(stocks => stocks.map(s => s.stock_symbol === stock.stock_symbol ? stock : s));
+  }, []);
+
   return (
     <div className={clsx('py-4', className)}>
       <ListSearch value={filter} onChange={handleFilterChange} placeholder={searchPlaceholder} />
@@ -77,6 +81,7 @@ const Stocks: FC<StocksProps> = ({ className, stocks: propStocks, href, userId, 
               href={href}
               menu={hasOperations ? <StockContextMenu stock={stock} {...operations} /> : undefined}
               overlay={!hasStock(stock.stock_symbol) ? <StockOverlay onAdd={onAdd} /> : undefined}
+              onStockInfoLoad={handleStockInfoLoad}
             />
           ))}
           {loading && Array(loading).fill(null).map((_, i) => (
@@ -94,22 +99,20 @@ export default Stocks;
 
 function useStockOperations (userId: number | undefined, setStocks: (mutate: (stocks: AnyStockItem[]) => AnyStockItem[]) => void) {
   const remove = useCallback((stockSymbol: string) => {
-    void fetch(`/api/user/selected_stocks`, {
-      method: 'DELETE',
-      body: JSON.stringify({
-        stockSymbol,
-      }),
-    });
+    const stocks = stocksStore.get();
+    if (stocks.includes(stockSymbol)) {
+      stocks.splice(stocks.indexOf(stockSymbol), 1);
+    }
+    stocksStore.set(stocks);
     setStocks((stocks) => stocks.filter(stock => stock.stock_symbol !== stockSymbol));
   }, []);
 
   const add = useCallback((stock: AnyStockItem) => {
-    void fetch(`/api/user/selected_stocks`, {
-      method: 'POST',
-      body: JSON.stringify({
-        stockSymbol: stock.stock_symbol,
-      }),
-    });
+    const stocks = stocksStore.get();
+    if (!stocks.includes(stock.stock_symbol)) {
+      stocks.unshift(stock.stock_symbol);
+    }
+    stocksStore.set(stocks);
     setStocks((stocks) => [stock, ...stocks]);
   }, []);
 

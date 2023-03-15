@@ -30,10 +30,11 @@ export type AnyStockItem = StockItem | UnresolvedStockItem;
 interface StockProps extends Omit<ListItemProps, 'text' | 'description' | 'detail' | 'href'> {
   stock: AnyStockItem;
   href?: string;
+  onStockInfoLoad?: (stockItem: StockItem) => void;
 }
 
-const Stock: FC<StockProps> = ({ stock, href, className, overlay, ...props }) => {
-  stock = useAuto(stock, isResolved, fetchStockSummary);
+const Stock: FC<StockProps> = ({ stock, href, className, overlay, onStockInfoLoad, ...props }) => {
+  stock = useAuto(stock, isResolved, fetchStockSummary, onStockInfoLoad);
   const symbol = useSelectedLayoutSegment();
 
   href = useMemo(() => {

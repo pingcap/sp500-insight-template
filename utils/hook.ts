@@ -44,7 +44,7 @@ export function useMounted () {
   return mounted;
 }
 
-export function useAuto<Unresolved, Resolved extends Unresolved> (value: Resolved | Unresolved, isResolved: (value: Resolved | Unresolved) => value is Resolved, fetch: (prev: Unresolved) => Promise<Resolved>) {
+export function useAuto<Unresolved, Resolved extends Unresolved> (value: Resolved | Unresolved, isResolved: (value: Resolved | Unresolved) => value is Resolved, fetch: (prev: Unresolved) => Promise<Resolved>, onLoad?: (resolved: Resolved) => void) {
   const [storeValue, setStoreValue] = useState(value);
   const [tried, setTried] = useState(false);
   const mounted = useMounted();
@@ -57,6 +57,7 @@ export function useAuto<Unresolved, Resolved extends Unresolved> (value: Resolve
           .then(value => {
             if (mounted.current) {
               setStoreValue(value);
+              onLoad?.(value)
             }
           });
       }

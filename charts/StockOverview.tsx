@@ -8,7 +8,7 @@ import { useSelectedLayoutSegment } from 'next/navigation';
 import { EndpointArgs, useComposedEndpoint, useEndpoint } from '@/utils/data-api/client';
 import endpoints from '@/datasource/endpoints';
 import { DateTime } from 'luxon';
-import { getDurationParams } from '@/app/api/duration-utils';
+import { getDurationParams } from '@/utils/duration-utils';
 
 interface StockOverviewProps {
   symbol?: string,

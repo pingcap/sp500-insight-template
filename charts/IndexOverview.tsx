@@ -11,7 +11,7 @@ import DurationToggleGroup from '@/components/DurationToggleGroup';
 import { EndpointArgs, useComposedEndpoint, useEndpoint } from '@/utils/data-api/client';
 import endpoints from '@/datasource/endpoints';
 import { DateTime } from 'luxon';
-import { getDurationParams } from '@/app/api/duration-utils';
+import { getDurationParams } from '@/utils/duration-utils';
 import { EndpointData } from '@/utils/data-api/endpoint';
 
 const IndexOverview: FC<{ index: string }> = ({ index }) => {
