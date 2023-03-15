@@ -19,19 +19,24 @@ export interface StocksProps {
   userId?: number;
   searchPlaceholder?: string;
   loading?: number | false;
+  stocks?: StockItem[];
 }
 
-const Stocks: FC<StocksProps> = ({ className, href, userId, searchPlaceholder, loading }: StocksProps) => {
+const Stocks: FC<StocksProps> = ({ className, href, userId, stocks: propStocks, searchPlaceholder, loading }: StocksProps) => {
   const currentSymbol = useSelectedLayoutSegment();
 
   const [filterTriggered, setFilterTriggered] = useState(false);
   const [filter, setFilter] = useState('');
-  const [stocks, setStocks] = useState<AnyStockItem[]>([]);
+  const [stocks, setStocks] = useState<AnyStockItem[]>(propStocks ?? []);
 
   useEffect(() => {
+    if (propStocks) {
+      setStocks(propStocks);
+      return;
+    }
     // Client only
     setStocks(stocksStore.get().map(stock_symbol => ({ stock_symbol })));
-  }, []);
+  }, [propStocks]);
 
   const { hasOperations, onAdd, ...operations } = useStockOperations(userId, setStocks);
 
