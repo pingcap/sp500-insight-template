@@ -42,13 +42,25 @@ const StockOverview: FC<StockOverviewProps> = ({ symbol: propSymbol }) => {
       },
       formatter: (([line]: CallbackDataParams[]) => {
         const k = line;
-        const lv = line.value as StockPriceData;
         const kv = k.value as StockPriceData;
 
-        const num = lv.adj_close?.toFixed(2);
-        const pos = kv.close > kv.open;
-        const diff = Math.abs((kv.close - kv.open) / kv.open * 100).toFixed(2);
-        return `${lv.record_date}<br/><span style="color: ${pos ? 'red' : 'green'}"><b>${num}</b> ${pos ? '+' : '-'}${diff}%</span>`;
+        const { record_date, close, open, high, low } = kv;
+        const num = close?.toFixed(2);
+        const pos = close > open;
+        const diff = Math.abs((close - open) / open * 100).toFixed(2);
+        return `
+          ${record_date}
+          <br/>
+          <span style="font-size: 24px; color: ${pos ? 'red' : 'green'}"><b>${num}</b> <sub>${pos ? '+' : '-'}${diff}%</sub></span>
+          <br/>
+          Change: <b style="color: ${pos ? 'red' : 'green'}">${(close - open).toFixed(2)}</b>
+          <br/>
+          Open: <b>${open.toFixed(2)}</b>
+          <br/>
+          High: <b>${high.toFixed(2)}</b>
+          <br/>
+          Low: <b>${low.toFixed(2)}</b>
+        `;
       }) as never,
     },
     xAxis: {
@@ -74,7 +86,6 @@ const StockOverview: FC<StockOverviewProps> = ({ symbol: propSymbol }) => {
         y: ['open', 'close', 'low', 'high'],
       },
       datasetId: 'data',
-
     },
     // dataZoom: {
     //   borderColor: 'transparent',
