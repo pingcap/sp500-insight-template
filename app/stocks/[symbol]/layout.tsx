@@ -5,13 +5,15 @@ import endpoints from '@/datasource/endpoints';
 
 const Layout: FC<PropsWithChildren<{ params: { symbol: string } }>> = ({ children, params: { symbol } }) => {
   return (
-    <Suspense
-      fallback={<CompanyOverview>{children}</CompanyOverview>}
-    >
-      <CompanyOverviewInternal symbol={symbol}>
-        {children}
-      </CompanyOverviewInternal>
-    </Suspense>
+    <main className="container mx-auto px-2">
+      <Suspense
+        fallback={<CompanyOverview>{children}</CompanyOverview>}
+      >
+        <CompanyOverviewInternal symbol={symbol}>
+          {children}
+        </CompanyOverviewInternal>
+      </Suspense>
+    </main>
   );
 };
 

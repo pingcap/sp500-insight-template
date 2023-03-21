@@ -3,6 +3,7 @@ import { ReactElement } from 'react';
 import { ClassValue } from 'clsx';
 import { SkeletonInline } from '@/components/Skeleton';
 import { isStockFieldResolved } from '@/components/Stocks/Stock';
+import Link from 'next/link';
 
 export type Column = {
   field?: string
@@ -31,26 +32,40 @@ const columns: Column[] = [
   },
   {
     title: 'Symbol',
-    renderCell: stock => stock.stock_symbol,
+    renderCell: stock => (
+      <Link href={`/stocks/${stock.stock_symbol}`}>
+        {stock.stock_symbol}
+      </Link>
+    ),
   },
   {
     title: 'Name',
-    renderCell: stock => isResolved(stock) ? stock.short_name : <SkeletonInline estimateCharacters={7} />,
+    renderCell: stock => (
+      <Link href={`/stocks/${stock.stock_symbol}`}>
+        {isResolved(stock) ? stock.short_name : <SkeletonInline estimateCharacters={7} />}
+      </Link>
+    ),
   },
   {
+    field: 'last_close_price',
     title: 'Price',
     renderCell: stock => isStockFieldResolved(stock, 'last_close_price') ? base(stock.last_close_price) : <SkeletonInline estimateCharacters={3} />,
     cellClassName: textColor('last_change'),
+    ordered: true
   },
   {
+    field: 'last_change',
     title: 'Chg',
     renderCell: stock => isStockFieldResolved(stock, 'last_change') ? base(stock.last_change) : <SkeletonInline estimateCharacters={2} />,
     cellClassName: textColor('last_change'),
+    ordered: true,
   },
   {
+    field: 'last_change_percentage',
     title: '% Chg',
     renderCell: stock => isStockFieldResolved(stock, 'last_change_percentage') ? percent(stock.last_change_percentage) : <SkeletonInline estimateCharacters={2} />,
     cellClassName: textColor('last_change'),
+    ordered: true,
   },
   {
     field: 'market_cap',
@@ -59,9 +74,11 @@ const columns: Column[] = [
     ordered: true,
   },
   {
+    field: 'revenue_growth',
     title: 'Revenue Growth',
     renderCell: stock => isStockFieldResolved(stock, 'revenue_growth') ? percent(stock.revenue_growth) : <SkeletonInline estimateCharacters={2} />,
     cellClassName: textColor('revenue_growth'),
+    ordered: true,
   },
 ];
 
@@ -69,7 +86,7 @@ export default columns;
 
 function base (value: number | undefined | null) {
   if (value == null) {
-    return '--'
+    return '--';
   }
   return value.toFixed(2);
 }
@@ -83,9 +100,9 @@ function percent (value: number | undefined | null) {
 
 function usd (value: number | undefined | null) {
   if (value == null) {
-    return '--'
+    return '--';
   }
-  return usdFormatter.format(value)
+  return usdFormatter.format(value);
 }
 
 const usdFormatter = new Intl.NumberFormat('en', {

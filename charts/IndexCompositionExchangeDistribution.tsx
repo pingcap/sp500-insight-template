@@ -1,3 +1,4 @@
+'use client'
 import { FC } from 'react';
 import ECharts, { useECharts } from '@/components/ECharts';
 import { useEndpoint } from '@/utils/data-api/client';

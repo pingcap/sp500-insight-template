@@ -1,3 +1,4 @@
+'use client'
 import { FC } from 'react';
 import ECharts, { useECharts } from '@/components/ECharts';
 import { byIso } from 'country-code-lookup';
