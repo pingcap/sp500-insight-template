@@ -16,6 +16,8 @@ namespace endpoints {
         last_close_price: number
         last_2nd_close_price: number
         last_change_percentage: number
+        market_cap: number
+        revenue_growth?: number
       }>('GET', '/index/compositions');
 
       export namespace country_distribution {
