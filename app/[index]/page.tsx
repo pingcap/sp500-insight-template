@@ -1,6 +1,6 @@
 import IndexOverview from '@/charts/IndexOverview';
 import IndustryDistribution from '@/charts/IndustryDistribution';
-import ContributionTabs from './ContributionTabs';
+import CompositionTabs from './CompositionTabs';
 
 export default function Home ({ params: { index } }: { params: { index: string } }) {
 
@@ -17,7 +17,7 @@ export default function Home ({ params: { index } }: { params: { index: string }
         <h2 className="my-4">
           Compositions
         </h2>
-        <ContributionTabs index={index} />
+        <CompositionTabs index={index} />
       </section>
       <section className="mt-8">
         <h2 className="my-4">

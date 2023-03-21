@@ -16,13 +16,19 @@ export interface UnresolvedStockItem {
   exchange_symbol?: string;
   last_close_price?: number;
   last_change_percentage?: number;
+  market_cap?: number
+  revenue_growth?: number
 }
 
 export interface StockItem extends UnresolvedStockItem {
   short_name: string;
   exchange_symbol: string;
   last_close_price: number;
+  last_change: number;
   last_change_percentage: number;
+
+  market_cap: number
+  revenue_growth?: number
 }
 
 export type AnyStockItem = StockItem | UnresolvedStockItem;
@@ -82,8 +88,8 @@ Stock.displayName = 'Stock';
 
 export default Stock;
 
-const fetchStockSummary = async (stock: UnresolvedStockItem) => {
-  return await clientEndpointFetcher([endpoints.stock.summary.GET, { stock_symbol: stock.stock_symbol }])
+export const fetchStockSummary = async (stock: UnresolvedStockItem) => {
+  return await clientEndpointFetcher([endpoints.stock.summary.GET, { stock_symbol: stock.stock_symbol }]);
 };
 
 const PercentTag = ({ value }: { value: number }) => {
@@ -95,6 +101,10 @@ const PercentTag = ({ value }: { value: number }) => {
   );
 };
 
-function isResolved (stock: AnyStockItem): stock is StockItem {
+export function isResolved (stock: AnyStockItem): stock is StockItem {
   return !!stock.short_name;
+}
+
+export function isStockFieldResolved<K extends keyof StockItem> (stock: AnyStockItem, field: K): stock is AnyStockItem & { [P in K]: Exclude<StockItem[P], undefined> } {
+  return field in stock;
 }

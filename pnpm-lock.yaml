@@ -13,6 +13,7 @@ specifiers:
   '@radix-ui/react-tabs': ^1.0.2
   '@radix-ui/react-toggle-group': ^1.0.2
   '@radix-ui/react-toolbar': ^1.0.2
+  '@radix-ui/react-use-size': ^1.0.0
   '@types/luxon': ^3.2.0
   '@types/node': 18.14.2
   '@types/react': 18.0.28
@@ -56,6 +57,7 @@ dependencies:
   '@radix-ui/react-tabs': 1.0.2_biqbaboplfbrettd7655fr4n2y
   '@radix-ui/react-toggle-group': 1.0.2_biqbaboplfbrettd7655fr4n2y
   '@radix-ui/react-toolbar': 1.0.2_biqbaboplfbrettd7655fr4n2y
+  '@radix-ui/react-use-size': 1.0.0_react@18.2.0
   '@types/react-dom': 18.0.11
   async: 3.2.4
   clsx: 1.2.1

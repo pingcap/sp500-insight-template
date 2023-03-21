@@ -1,5 +1,5 @@
 'use client';
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useMemo, useState } from 'react';
 import List, { ListSearch } from '@/components/List';
 import Stock, { AnyStockItem, StockItem } from './Stock';
 import StockContextMenu from './StockMenu';
@@ -19,26 +19,18 @@ export interface StocksProps {
   userId?: number;
   searchPlaceholder?: string;
   loading?: number | false;
-  stocks?: StockItem[];
+  stocks: AnyStockItem[];
+  onStockInfoLoaded?: (stock: StockItem) => void;
+  onStocksUpdate?: (mutate: (stocks: AnyStockItem[]) => AnyStockItem[]) => void;
 }
 
-const Stocks: FC<StocksProps> = ({ className, href, userId, stocks: propStocks, searchPlaceholder, loading }: StocksProps) => {
+const Stocks: FC<StocksProps> = ({ className, href, userId, stocks, searchPlaceholder, loading, onStockInfoLoaded, onStocksUpdate }: StocksProps) => {
   const currentSymbol = useSelectedLayoutSegment();
 
   const [filterTriggered, setFilterTriggered] = useState(false);
   const [filter, setFilter] = useState('');
-  const [stocks, setStocks] = useState<AnyStockItem[]>(propStocks ?? []);
 
-  useEffect(() => {
-    if (propStocks) {
-      setStocks(propStocks);
-      return;
-    }
-    // Client only
-    setStocks(stocksStore.get().map(stock_symbol => ({ stock_symbol })));
-  }, [propStocks]);
-
-  const { hasOperations, onAdd, ...operations } = useStockOperations(userId, setStocks);
+  const { hasOperations, onAdd, ...operations } = useStockOperations(userId, onStocksUpdate ?? (() => undefined));
 
   const { data: all = [], isLoading } = useComposedEndpoint((go) => go ? [endpoints.index.compositions.GET, { index_symbol: 'SP500' }] : undefined, filterTriggered && hasOperations);
 
@@ -62,10 +54,6 @@ const Stocks: FC<StocksProps> = ({ className, href, userId, stocks: propStocks, 
     return !!stocks.find(s => s.stock_symbol === symbol);
   }, [stocks]);
 
-  const handleStockInfoLoad = useCallback((stock: StockItem) => {
-    setStocks(stocks => stocks.map(s => s.stock_symbol === stock.stock_symbol ? stock : s));
-  }, []);
-
   return (
     <div className={clsx('py-4', className)}>
       <ListSearch value={filter} onChange={handleFilterChange} placeholder={searchPlaceholder} />
@@ -86,7 +74,7 @@ const Stocks: FC<StocksProps> = ({ className, href, userId, stocks: propStocks, 
               href={href}
               menu={hasOperations ? <StockContextMenu stock={stock} {...operations} /> : undefined}
               overlay={!hasStock(stock.stock_symbol) ? <StockOverlay onAdd={onAdd} /> : undefined}
-              onStockInfoLoad={handleStockInfoLoad}
+              onStockInfoLoad={onStockInfoLoaded}
             />
           ))}
           {loading && Array(loading).fill(null).map((_, i) => (

@@ -1,5 +1,6 @@
-import { DependencyList, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { DependencyList, useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import useSWR from 'swr';
 
 export function useRefCallback<T extends (...args: any) => any> (cb: T) {
   const ref = useRef(cb);
@@ -46,23 +47,16 @@ export function useMounted () {
 
 export function useAuto<Unresolved, Resolved extends Unresolved> (value: Resolved | Unresolved, isResolved: (value: Resolved | Unresolved) => value is Resolved, fetch: (prev: Unresolved) => Promise<Resolved>, onLoad?: (resolved: Resolved) => void) {
   const [storeValue, setStoreValue] = useState(value);
-  const [tried, setTried] = useState(false);
-  const mounted = useMounted();
+  const triedRef = useRef(false);
+  const id = useId();
+
+  const { data } = useSWR(!triedRef.current && !isResolved(storeValue) && `useAuto-${id}`, () => fetch(storeValue));
 
   useEffect(() => {
-    if (!isResolved(storeValue)) {
-      if (!tried) {
-        setTried(true);
-        void fetch(storeValue)
-          .then(value => {
-            if (mounted.current) {
-              setStoreValue(value);
-              onLoad?.(value)
-            }
-          });
-      }
+    if (data) {
+      setStoreValue(data);
     }
-  }, [tried, storeValue]);
+  }, [data]);
 
   return storeValue;
 }

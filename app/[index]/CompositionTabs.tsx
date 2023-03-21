@@ -9,7 +9,7 @@ export interface ContributionTagsProps {
   index: string;
 }
 
-const ContributionTabs: FC<ContributionTagsProps> = ({ index }) => {
+const CompositionTabs: FC<ContributionTagsProps> = ({ index }) => {
   return (
     <Tabs.Root defaultValue="overview">
       <Tabs.List className="flex gap-4 mb-2">
@@ -40,4 +40,4 @@ const TABS: TabItem[] = [
   { key: 'exchange_distribution', title: 'Exchange Distribution', Component: IndexCompositionExchangeDistribution },
 ];
 
-export default ContributionTabs;
+export default CompositionTabs;

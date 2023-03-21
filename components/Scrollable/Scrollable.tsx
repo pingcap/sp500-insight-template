@@ -4,20 +4,31 @@ import { ScrollAreaProps } from '@radix-ui/react-scroll-area';
 import clsx from 'clsx';
 
 export interface ScrollableProps extends ScrollAreaProps {
+  direction?: 'x' | 'y' | 'xy';
 }
 
-const Scrollable: FC<ScrollableProps> = ({ children, className, ...props }) => {
+const Scrollable: FC<ScrollableProps> = ({ children, className, direction = 'y', ...props }) => {
   return (
     <ScrollArea.Root className={clsx('overflow-hidden', className)} {...props}>
-      <ScrollArea.Viewport className="w-full h-full pr-2">
+      <ScrollArea.Viewport className={clsx('w-full h-full', direction.includes('y') && 'pr-2', direction.includes('x') && 'pb-2')}>
         {children}
       </ScrollArea.Viewport>
-      <ScrollArea.Scrollbar
-        className="flex select-none touch-none p-0.5 bg-white bg-opacity-5 rounded-[12px] transition-colors duration-[160ms] ease-out hover:bg-opacity-10 data-[orientation=vertical]:w-2.5 data-[orientation=horizontal]:flex-col data-[orientation=horizontal]:h-2.5"
-        orientation="vertical"
-      >
-        <ScrollArea.Thumb className="flex-1 bg-white bg-opacity-30 hover:bg-opacity-40 rounded-[10px] relative before:content-[''] before:absolute before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2 before:w-full before:h-full before:min-w-[44px] before:min-h-[44px]" />
-      </ScrollArea.Scrollbar>
+      {direction.includes('y') && (
+        <ScrollArea.Scrollbar
+          className="flex select-none touch-none p-0.5 bg-white bg-opacity-5 rounded-[12px] transition-colors duration-[160ms] ease-out hover:bg-opacity-10 data-[orientation=vertical]:w-2.5 data-[orientation=horizontal]:flex-col data-[orientation=horizontal]:h-2.5"
+          orientation="vertical"
+        >
+          <ScrollArea.Thumb className="flex-1 bg-white bg-opacity-30 hover:bg-opacity-40 rounded-[10px] relative before:content-[''] before:absolute before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2 before:w-full before:h-full before:min-w-[44px] before:min-h-[44px]" />
+        </ScrollArea.Scrollbar>
+      )}
+      {direction.includes('x') && (
+        <ScrollArea.Scrollbar
+          className="flex select-none touch-none p-0.5 bg-white bg-opacity-5 rounded-[12px] transition-colors duration-[160ms] ease-out hover:bg-opacity-10 data-[orientation=vertical]:w-2.5 data-[orientation=horizontal]:flex-col data-[orientation=horizontal]:h-2.5"
+          orientation="horizontal"
+        >
+          <ScrollArea.Thumb className="flex-1 bg-white bg-opacity-30 hover:bg-opacity-40 rounded-[10px] relative before:content-[''] before:absolute before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2 before:w-full before:h-full before:min-w-[44px] before:min-h-[44px]" />
+        </ScrollArea.Scrollbar>
+      )}
       <ScrollArea.Corner className="bg-white" />
     </ScrollArea.Root>
   );

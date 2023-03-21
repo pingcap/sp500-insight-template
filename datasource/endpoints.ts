@@ -87,9 +87,12 @@ namespace endpoints {
         last_change_day: string
         last_close_price: number
         last_2nd_close_price: number
+        last_change: number
         last_change_percentage: number
         short_name: string
         exchange_symbol: string
+        market_cap: number
+        revenue_growth?: number
       }>('GET', '/stock/summary', true);
     }
 

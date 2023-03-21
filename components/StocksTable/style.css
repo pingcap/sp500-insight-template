@@ -1,0 +1,25 @@
+.stocks-table-container {
+  @apply w-full;
+}
+
+.stocks-table {
+  width: max-content;
+  min-width: 100%;
+}
+
+.stocks-table tr {
+  @apply bg-primary;
+}
+
+.stocks-table tr:nth-of-type(2n):not(:last-of-type) {
+  @apply bg-secondary;
+}
+
+.stocks-table th, .stocks-table td {
+  @apply text-left;
+}
+
+.stocks-table td {
+  @apply p-2;
+}
+
