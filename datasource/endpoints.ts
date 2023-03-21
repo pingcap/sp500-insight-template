@@ -64,7 +64,9 @@ namespace endpoints {
         industry: string
         sector: string
         stock_symbol: string
+        short_name: string
         weight: number
+        market_cap: number
         trend: 1 | -1 | 0
       }>
       ('GET', '/index/sector_industry_distribution');

@@ -34,9 +34,9 @@ export default function Home ({ params: { index } }: { params: { index: string }
           Compositions
         </h2>
         <IndexCompositions index={index} />
-        <h3 className='mt-4'>Country distribution</h3>
+        <h3 className="mt-4">Country distribution</h3>
         <IndexCompositionCountryDistribution index={index} />
-        <h3 className='mt-4'>Exchange distribution</h3>
+        <h3 className="mt-4">Exchange distribution</h3>
         <IndexCompositionExchangeDistribution index={index} />
       </section>
       <section className="mt-8">

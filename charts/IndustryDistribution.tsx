@@ -19,12 +19,15 @@ const IndustryDistribution: FC<{ index: string }> = ({ index }) => {
       right: 8,
       bottom: 8,
     },
-    tooltip: {},
+    tooltip: {
+      valueFormatter: value => nf.format(value as number),
+    },
     series: {
       type: 'treemap',
       roam: false,
       leafDepth: 2,
       drillDownIcon: '',
+      name: 'Market cap',
       label: {
         color: '#dddddd',
       },
@@ -101,9 +104,11 @@ type TransformedRecord = {
   }[]
 }
 
-function transform (records?: EndpointData<typeof endpoints.index.sector_industry_distribution.GET>): TransformedRecord[] {
+type Data = EndpointData<typeof endpoints.index.sector_industry_distribution.GET>;
+
+const transform = (records?: Data): TransformedRecord[] => {
   const res: TransformedRecord[] = [];
-  for (const { industry, sector, stock_symbol, weight, trend } of records ?? []) {
+  for (const { industry, sector, short_name, market_cap } of records ?? []) {
     let s = res.find(s => s.name === sector);
     if (!s) {
       res.push(s = { name: sector, children: [] });
@@ -115,8 +120,8 @@ function transform (records?: EndpointData<typeof endpoints.index.sector_industr
     }
 
     i.children.push({
-      name: stock_symbol,
-      value: weight,
+      name: short_name,
+      value: market_cap,
       // itemStyle: {
       //   color: getColor(trend),
       // }
@@ -124,4 +129,10 @@ function transform (records?: EndpointData<typeof endpoints.index.sector_industr
   }
 
   return res;
-}
+};
+
+const nf = new Intl.NumberFormat('en', {
+  style: 'currency',
+  currency: 'USD',
+  minimumFractionDigits: 0
+})
