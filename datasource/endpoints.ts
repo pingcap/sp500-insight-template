@@ -80,6 +80,19 @@ namespace endpoints {
         last_changes: number
       }>('GET', '/index/latest_price', true);
     }
+
+    export namespace sector_ranking {
+      import IndexCommonParams = endpoints.index.IndexCommonParams;
+      export const GET = defineEndpoint<IndexCommonParams, {
+        sector: string
+        companies: number
+        companies_ranking: number
+        total_market_cap: number
+        total_market_cap_ranking: number
+        avg_revenue_growth: number
+        avg_revenue_growth_ranking: number
+      }>('GET', '/index/sector_ranking');
+    }
   }
 
   export namespace stock {

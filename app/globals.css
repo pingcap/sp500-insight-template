@@ -35,6 +35,10 @@ h5 {
   @apply text-lg;
 }
 
+p {
+  @apply text-lg text-primary;
+}
+
 [id] {
   scroll-margin: 72px;
 }

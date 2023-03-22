@@ -4,25 +4,20 @@ const SYMBOL_ENDPOINT = Symbol('data-api#endpoint');
 
 export type DataApiParams = Record<string, string | number | boolean>
 
-export type GeneralResponse<DT extends Record<string, any>> = {
-  code: number
-  message: string
-  data: QueryResponse<DT>[]
-}
-
 export type QueryResponse<DT extends Record<string, any>> = {
-  // 0 is OK
-  err_code: number
-  err_message: string
+  result: {
+    code: number
+    message: string
+    start_ms: number
+    end_ms: number
+    latency: number
+    row_count: number
+    row_affect: number
+    limit: string
+    query: string
+  }
   columns: DataColumn<DT>[]
-  rows: DataRow[]
-  start_ms: number
-  end_ms: number
-  latency: number
-  row_count: number
-  row_affect: number
-  limit: string
-  query: string
+  rows: DT[]
 }
 
 export type DataColumn<DT extends Record<string, any>> = {
@@ -67,27 +62,20 @@ export type TransformedResponse<DT extends Record<string, any>, Single extends b
   meta: any
 }
 
-export function transformResponse<DT extends Record<string, any>> (url: URL, response: GeneralResponse<DT>) {
-  if (response.code !== 200) {
+export function transformResponse<DT extends Record<string, any>> (url: URL, response: QueryResponse<DT>) {
+  if (response.result.code !== 200) {
     throw UpstreamError.ofResponse(url.toString(), response);
   }
-  const [data] = response.data;
-  if (!data) {
-    throw new Error('Invalid data api response');
-  }
-  if (data.err_code !== 0) {
-    throw UpstreamError.ofSql(url.toString(), data);
-  }
-  const rows = data.rows.map(columns => {
-    return columns.reduce((dt: DT, columnData, index) => {
-      const column = data.columns[index];
-      dt[column.col] = convertValue(columnData, column);
-      return dt;
+  const { rows, columns, ...rest } = response
+  rows.forEach(item => {
+    return columns.forEach((column) => {
+      item[column.col] = convertValue(item[column.col], column);
     }, {} as DT);
   });
   return {
-    ...data,
+    columns,
     rows,
+    ...rest
   };
 }
 

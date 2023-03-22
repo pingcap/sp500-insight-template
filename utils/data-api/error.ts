@@ -1,4 +1,4 @@
-import type { QueryResponse, GeneralResponse } from './endpoint'
+import type { QueryResponse } from './endpoint'
 
 export class UpstreamError extends Error {
   constructor (message: string, public url: string, public response?: Response, public body?: any) {
@@ -11,12 +11,8 @@ export class UpstreamError extends Error {
     return new UpstreamError(message, url, response);
   }
 
-  static ofSql (url: string, response: QueryResponse<any>) {
-    return new UpstreamError(`${response.err_code} ${response.err_message}: ${response.query}`,  url,undefined, response);
-  }
-
-  static ofResponse (url: string, response: GeneralResponse<any>) {
-    return new UpstreamError(`${response.code} ${response.message}`,  url,undefined, response);
+  static ofResponse (url: string, response: QueryResponse<any>) {
+    return new UpstreamError(`${response.result.code} ${response.result.message}`,  url,undefined, response);
   }
 
   async getUpstreamResponseText () {
