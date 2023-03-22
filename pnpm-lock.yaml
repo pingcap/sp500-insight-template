@@ -30,7 +30,7 @@ specifiers:
   eslint: 8.35.0
   eslint-config-next: 13.2.3
   luxon: ^3.3.0
-  mysql2: ^2.3.3
+  mysql2: ^3.2.0
   next: 13.2.3
   pino: ^8.11.0
   pino-pretty: ^9.4.0
@@ -69,7 +69,7 @@ dependencies:
   eslint: 8.35.0
   eslint-config-next: 13.2.3_ycpbpc6yetojsgtrx3mwntkhsu
   luxon: 3.3.0
-  mysql2: 2.3.3
+  mysql2: 3.2.0
   next: 13.2.3_wiv434v7erz4aedd5whhdwmpv4
   pino: 8.11.0
   pino-pretty: 9.4.0
@@ -2713,8 +2713,8 @@ packages:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
     dev: false
 
-  /long/4.0.0:
-    resolution: {integrity: sha512-XsP+KhQif4bjX1kbuSiySJFNAehNxgLb6hPRGJ9QsUr8ajHkuXGdrHmFUTUUXhDwVX2R5bY4JNZEwbUiMhV+MA==}
+  /long/5.2.1:
+    resolution: {integrity: sha512-GKSNGeNAtw8IryjjkhZxuKB3JzlcLTwjtiQCHKvqQet81I93kXslhDQruGI/QsddO83mcDToBVy7GqGS/zYf/A==}
     dev: false
 
   /loose-envify/1.4.0:
@@ -2787,15 +2787,15 @@ packages:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
     dev: false
 
-  /mysql2/2.3.3:
-    resolution: {integrity: sha512-wxJUev6LgMSgACDkb/InIFxDprRa6T95+VEoR+xPvtngtccNH2dGjEB/fVZ8yg1gWv1510c9CvXuJHi5zUm0ZA==}
+  /mysql2/3.2.0:
+    resolution: {integrity: sha512-0Vn6a9WSrq6fWwvPgrvIwnOCldiEcgbzapVRDAtDZ4cMTxN7pnGqCTx8EG32S/NYXl6AXkdO+9hV1tSIi/LigA==}
     engines: {node: '>= 8.0'}
     dependencies:
       denque: 2.1.0
       generate-function: 2.3.1
       iconv-lite: 0.6.3
-      long: 4.0.0
-      lru-cache: 6.0.0
+      long: 5.2.1
+      lru-cache: 7.18.3
       named-placeholders: 1.1.3
       seq-queue: 0.0.5
       sqlstring: 2.3.3
