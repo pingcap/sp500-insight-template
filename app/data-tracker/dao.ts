@@ -1,4 +1,4 @@
-import {createConnection, Connection, RowDataPacket} from 'mysql2';
+import {createConnection, Connection, RowDataPacket} from 'mysql2/promise';
 
 export interface Stock {
     symbol: string;
@@ -10,22 +10,13 @@ export interface Stock {
     volume: number;
 }
 
-function getConnection(): Connection {
-    return createConnection({
-        host: process.env.TIDB_SERVER_HOST,
-        port: parseInt(process.env.TIDB_SERVER_PORT || '4000'),
-        user: process.env.TIDB_USER,
-        password: process.env.TIDB_PASSWORD,
-        database: process.env.TIDB_DATABASE,
-        ssl: {
-          minVersion: 'TLSv1.2',
-          rejectUnauthorized: true
-        }
-    });
+function getConnection(): Promise<Connection> {
+    return createConnection(process.env.DATABASE_URL || "mysql://root:@localhost:4000/sp500insight");
 }
 
 function createTableIfNotExists(callback: Function) {
-    getConnection().execute(`
+    getConnection().then(connection => {
+      connection.execute(`
         CREATE TABLE IF NOT EXISTS stocks (
             symbol varchar(20) NOT NULL COMMENT 'Stock Symbol',
             time datetime NOT NULL COMMENT 'Stock Time',
@@ -36,75 +27,69 @@ function createTableIfNotExists(callback: Function) {
             volume int(11) NOT NULL DEFAULT 0 COMMENT 'Stock Volume',
             PRIMARY KEY (symbol, time) /*T![clustered_index] CLUSTERED */
           ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='The information of stocks';
-        `
-    , (err) => {
-        if (err) {
-            console.error(err);
-            return;
-        }
-        callback();
-    })
+        `)
+        .catch(err => console.error(err))
+        .then(() => callback());
+    });
 }
 
 export function insertStocks(stocks: Stock[]) {
     createTableIfNotExists(() => {
-        getConnection().query(
-            `INSERT INTO stocks (symbol, time, high, low, open, close, volume) VALUES ?
-            ON DUPLICATE KEY UPDATE high=VALUES(high), low=VALUES(low),
-            open=VALUES(open), close=VALUES(close), volume=VALUES(volume)`,
-            [stocks.map(stock =>
-                [stock.symbol, stock.time, stock.high, stock.low, stock.open, stock.close, stock.volume])
-            ]
-        );
+        getConnection().then(connection => {
+          connection.query(
+              `INSERT INTO stocks (symbol, time, high, low, open, close, volume) VALUES ?
+              ON DUPLICATE KEY UPDATE high=VALUES(high), low=VALUES(low),
+              open=VALUES(open), close=VALUES(close), volume=VALUES(volume)`,
+              [stocks.map(stock =>
+                  [stock.symbol, stock.time, stock.high, stock.low, stock.open, stock.close, stock.volume])
+              ]
+          );
+        })
     });
 }
 
 export function getStocks(symbol: string): Promise<Stock[]> {
     return new Promise((resolve, reject) => {
-      getConnection().query<RowDataPacket[]>(
-        `SELECT * FROM stocks WHERE symbol = ? ORDER BY time`,
-        [symbol],
-        (err, results) => {
-          let stocks: Stock[] = [];
-          if (err) {
+      getConnection().then(connection => {
+        connection.query(
+          `SELECT * FROM stocks WHERE symbol = ? ORDER BY time`,
+          [symbol])
+          .catch(err => {
             console.error(err);
             reject(err);
-            return;
-          }
-          results.forEach((row: any) => {
-            stocks.push({
-              symbol: row.symbol,
-              time: row.time,
-              high: row.high,
-              low: row.low,
-              open: row.open,
-              close: row.close,
-              volume: row.volume
-            });
-          });
-          resolve(stocks);
-        }
-      );
+          })
+          .then(
+            results => {
+              let stocks = (results as RowDataPacket[]).map(
+                row => ({
+                  symbol: row.symbol,
+                  time: row.time,
+                  high: row.high,
+                  low: row.low,
+                  open: row.open,
+                  close: row.close,
+                  volume: row.volume
+                })
+              );
+              resolve(stocks);
+            }
+          );
+      })
     });
 }
 
 export function getSymbols(): Promise<string[]> {
   return new Promise((resolve, reject) => {
-    getConnection().query<RowDataPacket[]>(
-      `SELECT DISTINCT symbol FROM stocks`,
-      (err, results) => {
-        let symbols: string[] = [];
-        if (err) {
-          console.error(err);
-          reject(err);
-          return;
-        }
-
-        results.forEach((row: any) => {
-          symbols.push(row.symbol);
-        });
+    getConnection().then(connection => {
+      connection.query(
+        `SELECT DISTINCT symbol FROM stocks`
+      ).catch(err => {
+        console.error(err);
+        reject(err);
+      }).then((results) => {
+        let symbols = (results as RowDataPacket[]).map(row => row.symbol);
         resolve(symbols);
-      }
-    );
+      });
+    })
   });
 }
