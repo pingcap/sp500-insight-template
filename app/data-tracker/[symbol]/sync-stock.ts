@@ -1,4 +1,5 @@
-import {insertStocks, Stock} from '../dao';
+import {Stock} from '../dao/base';
+import {insertStocks} from '../dao/stock';
 
 export async function requestStockInfoAndSave(symbol: string): Promise<Stock[]> {
     let url = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&`+

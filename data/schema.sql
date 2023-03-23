@@ -50,15 +50,20 @@ CREATE TABLE IF NOT EXISTS companies (
     PRIMARY KEY (stock_symbol)
 ) COMMENT='Companies';
 
-CREATE TABLE IF NOT EXISTS users (
-    user_id INT NOT NULL COMMENT 'User ID' AUTO_INCREMENT,
-    created_date DATETIME NOT NULL COMMENT 'Creation date',
-    PRIMARY KEY (user_id)
-) COMMENT='Users';
+CREATE TABLE IF NOT EXISTS user_selected_symbol (
+    stock_symbol VARCHAR(20) NOT NULL COMMENT 'Stock code',
+    created_date DATETIME NOT NULL COMMENT 'Created date',
+    updated_date DATETIME NOT NULL COMMENT 'Updated date',
+    PRIMARY KEY (stock_symbol)
+) COMMENT='User selected symbols';
 
 CREATE TABLE IF NOT EXISTS user_selected_stocks (
-    user_id INT NOT NULL COMMENT 'User ID',
-    stock_symbol VARCHAR(10) NOT NULL COMMENT 'Stock code',
-    created_date DATETIME NOT NULL COMMENT 'Creation date',
-    PRIMARY KEY (user_id, stock_symbol)
-) COMMENT='User selected stocks';
+    symbol varchar(20) NOT NULL COMMENT 'Stock Symbol',
+    time datetime NOT NULL COMMENT 'Stock Time',
+    high decimal(10,4) NOT NULL DEFAULT 0 COMMENT 'Stock High',
+    low  decimal(10,4) NOT NULL DEFAULT 0 COMMENT 'Stock Low',
+    open decimal(10,4) NOT NULL DEFAULT 0 COMMENT 'Stock Open',
+    close decimal(10,4) NOT NULL DEFAULT 0 COMMENT 'Stock Close',
+    volume int(11) NOT NULL DEFAULT 0 COMMENT 'Stock Volume',
+    PRIMARY KEY (symbol, time)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='User selected stocks';
