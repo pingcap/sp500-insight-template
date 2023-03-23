@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import * as ToggleGroup from '@radix-ui/react-toggle-group';
+import CommonToggleGroup from '@/components/ToggleGroup';
 
 interface DurationToggleGroupProps {
   value?: string | null;
@@ -8,20 +8,7 @@ interface DurationToggleGroupProps {
 
 const DurationToggleGroup: FC<DurationToggleGroupProps> = ({ value, onChange }) => {
   return (
-    <ToggleGroup.Root
-      className="flex gap-4 mt-4 mb-2"
-      type="single"
-      defaultValue="center"
-      value={value ?? undefined}
-      onValueChange={onChange}
-      aria-label="Duration"
-    >
-      {DURATIONS.map(({ name }) => (
-        <ToggleGroup.Item className="toggle-item" key={name} value={name} aria-label={name}>
-          {name}
-        </ToggleGroup.Item>
-      ))}
-    </ToggleGroup.Root>
+    <CommonToggleGroup value={value} onChange={onChange} options={DURATIONS} label="Duration" />
   );
 };
 

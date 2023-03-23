@@ -7,11 +7,11 @@
   min-width: 100%;
 }
 
-.stocks-table tr {
+.stocks-table tr td {
   @apply bg-primary;
 }
 
-.stocks-table tr:nth-of-type(2n):not(:last-of-type) {
+.stocks-table tr:nth-of-type(2n):not(:last-of-type) td {
   @apply bg-secondary;
 }
 

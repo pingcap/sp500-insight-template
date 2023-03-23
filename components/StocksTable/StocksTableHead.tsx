@@ -24,9 +24,10 @@ const StocksTableHead: FC<StocksTableHeadProps> = ({ columnsOffsetLeft, stickyCo
       {columns.map((column, index) => (
         <th
           key={column.field ?? column.title}
-          className={index < stickyColumns ? 'sticky' : undefined}
+          className={index < stickyColumns ? 'sticky z-20 bg-primary' : 'sticky z-10 bg-primary'}
           style={{
             left: columnsOffsetLeft[index],
+            top: 0,
           }}
         >
           <ReorderButton

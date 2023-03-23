@@ -21,7 +21,7 @@ const StockRow: FC<StockCellProps> = ({ stock: propStock, stockIndex, stocks, on
       {columns.map((column, index) => (
         <td
           key={column.title}
-          className={clsx(column.cellClassName?.(stock, stockIndex, stocks), { 'sticky': index < stickyColumns })}
+          className={clsx(column.cellClassName?.(stock, stockIndex, stocks), { 'sticky z-0 bg-primary': index < stickyColumns })}
           style={{
             left: columnOffsetLeft[index],
           }}

@@ -7,7 +7,7 @@ namespace endpoints {
     }
 
     export namespace compositions {
-      export const GET = defineEndpoint<IndexCommonParams, {
+      export type CompositionData = {
         stock_symbol: string
         exchange_symbol: string
         short_name: string
@@ -18,7 +18,9 @@ namespace endpoints {
         last_change_percentage: number
         market_cap: number
         revenue_growth?: number
-      }>('GET', '/index/compositions');
+      }
+
+      export const GET = defineEndpoint<IndexCommonParams, CompositionData>('GET', '/index/compositions');
 
       export namespace country_distribution {
         export const GET = defineEndpoint<IndexCommonParams, {
@@ -35,6 +37,10 @@ namespace endpoints {
           companies: number
         }>('GET', '/index/compositions/exchange_distribution');
       }
+    }
+
+    export namespace compositions_by_sector {
+      export const GET = defineEndpoint<IndexCommonParams & { sector: string }, compositions.CompositionData>('GET', '/index/compositions_by_sector');
     }
 
     export namespace history_price {
@@ -64,7 +70,9 @@ namespace endpoints {
         industry: string
         sector: string
         stock_symbol: string
+        short_name: string
         weight: number
+        market_cap: number
         trend: 1 | -1 | 0
       }>
       ('GET', '/index/sector_industry_distribution');
@@ -77,6 +85,19 @@ namespace endpoints {
         last_2nd_price: number
         last_changes: number
       }>('GET', '/index/latest_price', true);
+    }
+
+    export namespace sector_ranking {
+      import IndexCommonParams = endpoints.index.IndexCommonParams;
+      export const GET = defineEndpoint<IndexCommonParams, {
+        sector: string
+        companies: number
+        companies_ranking: number
+        total_market_cap: number
+        total_market_cap_ranking: number
+        avg_revenue_growth: number
+        avg_revenue_growth_ranking: number
+      }>('GET', '/index/sector_ranking');
     }
   }
 
@@ -139,6 +160,10 @@ namespace endpoints {
         export const GET = defineEndpoint<RangeParams, StockHistoryData>('GET', `/stock/history_price/weekly`);
       }
     }
+  }
+
+  export namespace sectors {
+    export const GET = defineEndpoint<{}, { sector: string }>('GET', '/sectors');
   }
 }
 

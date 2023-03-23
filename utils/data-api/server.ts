@@ -36,7 +36,8 @@ export async function executeEndpoint<Params extends DataApiParams, Data extends
   }
 
   const meta = transformResponseMeta(response);
-  const { rows, start_ms, end_ms, latency, row_count, row_affect } = transformResponse<Data>(url, json);
+  const { rows, result } = transformResponse<Data>(url, json.data);
+  const { start_ms, end_ms, latency, row_count, row_affect } = result;
 
   if (endpoint.single) {
     return {
