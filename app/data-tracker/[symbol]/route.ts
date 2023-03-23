@@ -8,8 +8,8 @@ interface DataTrackerRouteParams {
 }
 
 export async function POST (request: NextRequest, { params }: { params: DataTrackerRouteParams }) {
-    if (process.env.DISABLE_ADD_TRACK_SYMBOL === "true") {
-        return new Response("Add track symbol is disabled", {status: 403});
+    if (process.env.DISABLE_EDIT_TRACK_SYMBOL === "true") {
+        return new Response("Edit track symbol is disabled", {status: 403});
     }
 
     await addSymbol(params.symbol);
@@ -23,6 +23,10 @@ export async function GET (request: NextRequest, { params }: { params: DataTrack
 }
 
 export async function DELETE (request: NextRequest, { params }: { params: DataTrackerRouteParams }) {
+    if (process.env.DISABLE_EDIT_TRACK_SYMBOL === "true") {
+        return new Response("Edit track symbol is disabled", {status: 403});
+    }
+    
     await deleteSymbol(params.symbol);
     return NextResponse.json("Delete symbol successfully");
 }
