@@ -25,7 +25,7 @@ export type TableColumn<T, K extends string & keyof T> = CustomColumn<T> | Field
 
 const Table = <T extends Record<string, any>> ({ columns, rows, keyField }: TableProps<T>) => {
   return (
-    <table>
+    <table className='w-full text-left'>
       <thead>
       <tr>
         {columns.map(column => (

@@ -8,15 +8,17 @@ import Scrollable from '@/components/Scrollable';
 import columns from '@/components/StocksTable/columns';
 import { useSize } from '@radix-ui/react-use-size';
 import { useRefCallback } from '@/utils/hook';
+import clsx from 'clsx';
 
 export interface StocksTableProps {
+  className?: string;
   stocks: AnyStockItem[];
   onInfoLoad?: (stock: StockItem) => void;
   onChange?: (mutate: (stocks: AnyStockItem[]) => AnyStockItem[]) => void;
   stickyColumns?: number;
 }
 
-const StocksTable: FC<StocksTableProps> = ({ stocks, stickyColumns = 2, onInfoLoad, onChange }) => {
+const StocksTable: FC<StocksTableProps> = ({ className, stocks, stickyColumns = 2, onInfoLoad, onChange }) => {
   const { colRefs, widths } = useColumnWidths();
   const [orderedField, setOrderedField] = useState<string>();
   const [order, setOrder] = useState<'ASC' | 'DESC'>('ASC');
@@ -62,7 +64,7 @@ const StocksTable: FC<StocksTableProps> = ({ stocks, stickyColumns = 2, onInfoLo
   }, [stocks, orderedField, order]);
 
   return (
-    <Scrollable className="stocks-table-container" direction="x">
+    <Scrollable className={clsx('stocks-table-container', className)} direction="xy">
       <table className="stocks-table">
         <colgroup>
           {columns.map((c, i) => <col key={c.title} ref={colRefs[i]} />)}

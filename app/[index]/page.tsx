@@ -1,7 +1,7 @@
 import IndexOverview from '@/charts/IndexOverview';
 import IndustryDistribution from '@/charts/IndustryDistribution';
 import IndexCompositions from '@/charts/IndexCompositions';
-import IndexCompositionCountryDistribution from '@/charts/IndexCompositionCountryDistribution';
+import IndexCompositionGeoDistribution from '@/charts/IndexCompositionGeoDistribution';
 import IndexCompositionExchangeDistribution from '@/charts/IndexCompositionExchangeDistribution';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
@@ -33,18 +33,25 @@ export default function Home ({ params: { index } }: { params: { index: string }
         <h2 id="index" className="my-4">
           S&P 500 Index
         </h2>
-        <p className="mt-2">
+        <p className="mt-2 basic-links">
           The <b>Standard and Poor&apos;s 500</b>, or simply the <b>S&P 500</b>, is a
+          {' '}
           <a href="https://en.wikipedia.org/wiki/Stock_market_index" target="_blank">stock market index</a>
+          {' '}
           tracking the stock performance of 500 large companies listed on
+          {' '}
           <a href="https://en.wikipedia.org/wiki/Stock_exchange" target="_blank">stock exchanges</a>
+          {' '}
           in the United States. It is one of the most commonly followed equity indices. You can view the
           changes in the S&P 500 Index by selecting a time frame ranging from 7 days (7D) to MAX.
         </p>
         <IndexOverview index={index} />
       </section>
       <section className="mt-8">
-        <h2>Ranking</h2>
+        <h2 id="industry-ranking">Ranking</h2>
+        <p className='mt-4'>
+          Based on Industry total capitalization
+        </p>
         <SectorsRanking index={index} />
       </section>
       <section className="mt-8">
@@ -52,13 +59,13 @@ export default function Home ({ params: { index } }: { params: { index: string }
           Compositions
         </h2>
         <IndexCompositions index={index} />
-        <h3 id="geo" className="mt-4">Country distribution</h3>
-        <IndexCompositionCountryDistribution index={index} />
+        <h3 id="geo" className="mt-4">Country & Region distribution</h3>
+        <IndexCompositionGeoDistribution index={index} />
         <h3 id="exchanges" className="mt-4">Exchange distribution</h3>
         <IndexCompositionExchangeDistribution index={index} />
       </section>
       <section className="mt-8">
-        <h2 id="industry-ranking" className="my-4">
+        <h2 className="my-4">
           Sectors
         </h2>
         <IndustryDistribution index={index} />

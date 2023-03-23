@@ -1,18 +1,18 @@
-'use client'
+'use client';
 import { FC } from 'react';
 import ECharts, { useECharts } from '@/components/ECharts';
 import { byIso } from 'country-code-lookup';
 import { worldMapSeries } from '@/components/ECharts/map';
-import { useEndpoint } from '@/utils/data-api/client';
 import endpoints from '@/datasource/endpoints';
 import { EndpointData } from '@/utils/data-api/endpoint';
 import { useTransform } from '@/utils/hook';
+import { useEndpoint } from '@/utils/data-api/client';
 
 interface GeoDistributionProps {
   index: string;
 }
 
-const IndexCompositionCountryDistribution: FC<GeoDistributionProps> = ({ index }) => {
+const IndexCompositionGeoDistribution: FC<GeoDistributionProps> = ({ index }) => {
   const { ref, useOption } = useECharts();
   const { data: raw = [], isLoading } = useEndpoint(endpoints.index.compositions.country_distribution.GET, { index_symbol: index });
   const data = useTransform(raw, transform);
@@ -56,7 +56,7 @@ const IndexCompositionCountryDistribution: FC<GeoDistributionProps> = ({ index }
   );
 };
 
-export default IndexCompositionCountryDistribution;
+export default IndexCompositionGeoDistribution;
 
 type GeoData = EndpointData<typeof endpoints.index.compositions.country_distribution.GET>[number]
 

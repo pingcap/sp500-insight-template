@@ -1,17 +1,20 @@
 'use client';
-import { FC } from 'react';
-import { useEndpoint } from '@/utils/data-api/client';
+import { FC, useState } from 'react';
+import { useComposedEndpoint } from '@/utils/data-api/client';
 import endpoints from '@/datasource/endpoints';
 import StocksTable from '@/components/StocksTable';
-import Scrollable from '@/components/Scrollable';
 
 const IndexCompositions: FC<{ index: string }> = ({ index }) => {
-  const { data = [], isLoading } = useEndpoint(endpoints.index.compositions.GET, { index_symbol: index });
-
+  const [sector, setSector] = useState<string>();
+  const { data = [], isLoading } = useComposedEndpoint((sector) => {
+    if (typeof sector === 'string') {
+      return [endpoints.index.compositions.by_sector.GET, { index_symbol: index, sector }];
+    } else {
+      return [endpoints.index.compositions.GET, { index_symbol: index }];
+    }
+  }, sector);
   return (
-    <Scrollable className="h-[480px]">
-      <StocksTable stocks={data} />
-    </Scrollable>
+    <StocksTable className="h-[480px]" stocks={data} />
   );
 };
 

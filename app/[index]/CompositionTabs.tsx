@@ -2,7 +2,7 @@
 import { FC } from 'react';
 import * as Tabs from '@radix-ui/react-tabs';
 import IndexCompositions from '@/charts/IndexCompositions';
-import IndexCompositionCountryDistribution from '@/charts/IndexCompositionCountryDistribution';
+import IndexCompositionGeoDistribution from '@/charts/IndexCompositionGeoDistribution';
 import IndexCompositionExchangeDistribution from '@/charts/IndexCompositionExchangeDistribution';
 
 export interface ContributionTagsProps {
@@ -36,7 +36,7 @@ type TabItem = {
 
 const TABS: TabItem[] = [
   { key: 'overview', title: 'Overview', Component: IndexCompositions },
-  { key: 'country_distribution', title: 'Country Distribution', Component: IndexCompositionCountryDistribution },
+  { key: 'country_distribution', title: 'Country Distribution', Component: IndexCompositionGeoDistribution },
   { key: 'exchange_distribution', title: 'Exchange Distribution', Component: IndexCompositionExchangeDistribution },
 ];
 
