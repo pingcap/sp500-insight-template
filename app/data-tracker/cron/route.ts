@@ -6,7 +6,6 @@ import { requestStockInfoAndSave } from '../[symbol]/sync-stock';
 // and the rate limit is 1 request per minute
 export async function GET (request: NextRequest) {
     let oldestSymbol = await updateOldestSymbol();
-    console.log(oldestSymbol);
     await requestStockInfoAndSave(oldestSymbol.symbol);
     return NextResponse.json(oldestSymbol);
 }
