@@ -7,7 +7,7 @@ namespace endpoints {
     }
 
     export namespace compositions {
-      type CompositionData = {
+      export type CompositionData = {
         stock_symbol: string
         exchange_symbol: string
         short_name: string
@@ -21,10 +21,6 @@ namespace endpoints {
       }
 
       export const GET = defineEndpoint<IndexCommonParams, CompositionData>('GET', '/index/compositions');
-
-      export namespace by_sector {
-        export const GET = defineEndpoint<IndexCommonParams & { sector: string }, CompositionData>('GET', '/index/compositions_by_sector');
-      }
 
       export namespace country_distribution {
         export const GET = defineEndpoint<IndexCommonParams, {
@@ -41,6 +37,10 @@ namespace endpoints {
           companies: number
         }>('GET', '/index/compositions/exchange_distribution');
       }
+    }
+
+    export namespace compositions_by_sector {
+      export const GET = defineEndpoint<IndexCommonParams & { sector: string }, compositions.CompositionData>('GET', '/index/compositions_by_sector');
     }
 
     export namespace history_price {
@@ -160,6 +160,10 @@ namespace endpoints {
         export const GET = defineEndpoint<RangeParams, StockHistoryData>('GET', `/stock/history_price/weekly`);
       }
     }
+  }
+
+  export namespace sectors {
+    export const GET = defineEndpoint<{}, { sector: string }>('GET', '/sectors');
   }
 }
 
