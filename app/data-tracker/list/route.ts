@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSymbols } from '../dao/symbol';
-import { Symbol } from '../dao/base';
 
 export async function GET (request: NextRequest) {
-    let symbols: Symbol[] = await getSymbols();
-    return NextResponse.json(symbols);
+    try {
+        const symbols = await getSymbols();
+        return NextResponse.json(symbols);
+    } catch (err) {
+        console.log(err);
+        return NextResponse.error();
+    }
 }
