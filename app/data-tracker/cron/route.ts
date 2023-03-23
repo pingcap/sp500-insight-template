@@ -11,6 +11,6 @@ export async function GET (request: NextRequest) {
         return NextResponse.json(oldestSymbol);
     } catch (err) {
         console.log(err);
-        return NextResponse.error();
+        return new Response(JSON.stringify(err), {status: 500});
     }
 }
