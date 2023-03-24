@@ -19,7 +19,7 @@ export default function Home ({ params: { index } }: { params: { index: string }
       <ul className="basic-links text-lg text-primary list-disc list-inside mt-2">
         <li><a href="#index">S&P 500 Index</a></li>
         <li><Link href="/optional">List of selected stocks</Link></li>
-        <li><Link href="/SP500/sector-ranking"></Link>Rankings of constituent stocks</li>
+        <li><Link href="/SP500/sector-ranking">Rankings of constituent stocks</Link></li>
         <li><Link href="/SP500/constituents">Analysis of constituent stocks based on different industries</Link></li>
         <li><Link href="/SP500/constituents#geo">Distribution of constituent stocks by country (geography)</Link></li>
         <li><Link href="/SP500/constituents#exchanges">Proportional distribution of exchanges</Link></li>
