@@ -5,11 +5,10 @@ import IndexCompositionExchangeDistribution from '@/charts/IndexCompositionExcha
 export default function Page ({ params: { index } }: { params: { index: string } }) {
   return (
     <section className="mt-8">
-      <h2 id="compositions" className="my-4">
-        Compositions
+      <h2 className="my-4">
+        Constituents
       </h2>
-      <p className="mt-4">Composition in stocks index is the set of stocks included in a particular stock index. A stock index is a statistical measure of the value of a section of the stock market, and composition refers to the individual companies that make up that index. The composition of a stock index can be affected by changes in the market, such as mergers, acquisitions, and bankruptcies. Knowing the composition of a stock index can help investors determine which stocks are performing
-        well, and which ones are not.</p>
+      <p className="mt-4">A constituent is a company whose shares are part of an index such as the S&P 500 or Dow Jones Industrial Average (DJIA). It is a component or a member of an index. The weighted aggregation of the share prices of all its constituents is used to calculate the value of an index.</p>
       <IndexCompositions index={index} />
       <h3 id="geo" className="mt-4">Country & Region distribution</h3>
       <IndexCompositionGeoDistribution index={index} />

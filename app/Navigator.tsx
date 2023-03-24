@@ -33,8 +33,8 @@ const Navigator: FC = () => {
         </NavigationMenu.Item>
         <NavigationMenu.Item>
           <NavigationMenu.Link asChild>
-            <Link {...linkProps('/SP500/compositions', pathname)}>
-              Compositions
+            <Link {...linkProps('/SP500/constituents', pathname)}>
+              Constituents
             </Link>
           </NavigationMenu.Link>
         </NavigationMenu.Item>

@@ -19,9 +19,9 @@ export default function Home ({ params: { index } }: { params: { index: string }
         <li><a href="#index">S&P 500 Index</a></li>
         <li><Link href="/optional">Customized list of stocks, monitoring the stock price changes of selected constituent stocks</Link></li>
         <li><Link href="/SP500/sector-ranking">Ranking based on industry total market capitalization</Link></li>
-        <li><Link href="/SP500/compositions">Rankings of constituent stocks based on market capitalization in the industry</Link></li>
-        <li><Link href="/SP500/compositions#geo">Distribution of constituent stocks by country (geography)</Link></li>
-        <li><Link href="/SP500/compositions#exchanges">Proportional distribution of exchanges</Link></li>
+        <li><Link href="/SP500/constituents">Rankings of constituent stocks based on market capitalization in the industry</Link></li>
+        <li><Link href="/SP500/constituents#geo">Distribution of constituent stocks by country (geography)</Link></li>
+        <li><Link href="/SP500/constituents#exchanges">Proportional distribution of exchanges</Link></li>
         <li>Detailed information and Candle-stick chart of individual constituent stocks</li>
       </ul>
       <section className="mt-8">
