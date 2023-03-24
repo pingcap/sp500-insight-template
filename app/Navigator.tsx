@@ -10,14 +10,14 @@ const Navigator: FC = () => {
         <NavigationMenu.Item>
           <NavigationMenu.Link asChild>
             <Link href="/SP500" >
-              S&P 500
+              S&P 500 Analysis
             </Link>
           </NavigationMenu.Link>
         </NavigationMenu.Item>
         <NavigationMenu.Item>
           <NavigationMenu.Link asChild>
             <Link href="/optional">
-              Optional
+              Constituent Stocks Analysis
             </Link>
           </NavigationMenu.Link>
         </NavigationMenu.Item>
