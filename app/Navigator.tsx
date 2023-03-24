@@ -5,11 +5,11 @@ import Link from 'next/link';
 
 const Navigator: FC = () => {
   return (
-    <NavigationMenu.Root className='container sticky top-0 z-20 bg-primary mx-auto p-2 h-12'>
-      <NavigationMenu.List className='flex items-center text-xl gap-8 text-significant'>
+    <NavigationMenu.Root className="container sticky top-0 z-20 bg-primary mx-auto p-2 h-12">
+      <NavigationMenu.List className="flex items-center text-xl gap-8 text-significant">
         <NavigationMenu.Item>
           <NavigationMenu.Link asChild>
-            <Link href="/SP500" >
+            <Link href="/SP500">
               S&P 500 Analysis
             </Link>
           </NavigationMenu.Link>
@@ -18,6 +18,20 @@ const Navigator: FC = () => {
           <NavigationMenu.Link asChild>
             <Link href="/optional">
               Constituent Stocks Analysis
+            </Link>
+          </NavigationMenu.Link>
+        </NavigationMenu.Item>
+        <NavigationMenu.Item>
+          <NavigationMenu.Link asChild>
+            <Link href="/SP500/sector-ranking">
+              Ranking
+            </Link>
+          </NavigationMenu.Link>
+        </NavigationMenu.Item>
+        <NavigationMenu.Item>
+          <NavigationMenu.Link asChild>
+            <Link href="/SP500/compositions">
+              Compositions
             </Link>
           </NavigationMenu.Link>
         </NavigationMenu.Item>

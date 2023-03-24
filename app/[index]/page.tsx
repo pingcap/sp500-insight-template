@@ -1,10 +1,6 @@
 import IndexOverview from '@/charts/IndexOverview';
-import IndexCompositions from '@/charts/IndexCompositions';
-import IndexCompositionGeoDistribution from '@/charts/IndexCompositionGeoDistribution';
-import IndexCompositionExchangeDistribution from '@/charts/IndexCompositionExchangeDistribution';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import SectorsRanking from '@/charts/SectorsRanking';
 
 export default function Home ({ params: { index } }: { params: { index: string } }) {
   if (index !== 'SP500') {
@@ -12,7 +8,7 @@ export default function Home ({ params: { index } }: { params: { index: string }
   }
 
   return (
-    <main className="max-w-[960px] mx-auto">
+    <>
       <h1>S&P 500 Insight</h1>
       <h2 className="mt-4">Overview</h2>
       <p className="mt-4">
@@ -22,10 +18,10 @@ export default function Home ({ params: { index } }: { params: { index: string }
       <ul className="basic-links text-lg text-primary list-disc list-inside mt-2">
         <li><a href="#index">S&P 500 Index</a></li>
         <li><Link href="/optional">Customized list of stocks, monitoring the stock price changes of selected constituent stocks</Link></li>
-        <li><a href="#industry-ranking">Ranking based on industry total market capitalization</a></li>
-        <li><a href="#compositions">Rankings of constituent stocks based on market capitalization in the industry</a></li>
-        <li><a href="#geo">Distribution of constituent stocks by country (geography)</a></li>
-        <li><a href="#exchanges">Proportional distribution of exchanges</a></li>
+        <li><Link href="/SP500/sector-ranking">Ranking based on industry total market capitalization</Link></li>
+        <li><Link href="/SP500/compositions">Rankings of constituent stocks based on market capitalization in the industry</Link></li>
+        <li><Link href="/SP500/compositions#geo">Distribution of constituent stocks by country (geography)</Link></li>
+        <li><Link href="/SP500/compositions#exchanges">Proportional distribution of exchanges</Link></li>
         <li>Detailed information and Candle-stick chart of individual constituent stocks</li>
       </ul>
       <section className="mt-8">
@@ -46,26 +42,6 @@ export default function Home ({ params: { index } }: { params: { index: string }
         </p>
         <IndexOverview index={index} />
       </section>
-      <section className="mt-8">
-        <h2 id="industry-ranking">Ranking</h2>
-        <p className="mt-4">
-          Based on Industry total capitalization
-        </p>
-        <SectorsRanking index={index} />
-      </section>
-      <section className="mt-8">
-        <h2 id="compositions" className="my-4">
-          Compositions
-        </h2>
-        <p className="mt-4">Composition in stocks index is the set of stocks included in a particular stock index. A stock index is a statistical measure of the value of a section of the stock market, and composition refers to the individual companies that make up that index. The composition of a stock index can be affected by changes in the market, such as mergers, acquisitions, and bankruptcies. Knowing the composition of a stock index can help investors determine which stocks are performing
-          well, and which ones are not.</p>
-        <IndexCompositions index={index} />
-        <h3 id="geo" className="mt-4">Country & Region distribution</h3>
-        <IndexCompositionGeoDistribution index={index} />
-        <h3 id="exchanges" className="mt-4">Exchange distribution</h3>
-        <p className="mt-4">In stock market trading, an exchange is a marketplace where stocks, bonds, options, futures, and other financial instruments are bought and sold. Exchanges provide a platform for buyers and sellers to meet and negotiate prices. They also provide a mechanism for pricing and clearing trades, as well as collecting and distributing market data.</p>
-        <IndexCompositionExchangeDistribution index={index} />
-      </section>
-    </main>
+    </>
   );
 }

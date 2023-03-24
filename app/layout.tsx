@@ -15,7 +15,9 @@ export default function RootLayout ({
     <html lang="en">
     <body>
     <Navigator />
-    {children}
+    <main className="max-w-[960px] mx-auto">
+      {children}
+    </main>
     </body>
     </html>
   );
