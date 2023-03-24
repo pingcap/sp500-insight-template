@@ -21,4 +21,4 @@ export default function Page ({ params: { index } }: { params: { index: string }
       <IndexCompositionExchangeDistribution index={index} />
     </section>
   );
-map
+}
