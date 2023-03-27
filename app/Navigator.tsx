@@ -19,7 +19,7 @@ const Navigator: FC = () => {
         </NavigationMenu.Item>
         <NavigationMenu.Item>
           <NavigationMenu.Link asChild>
-            <Link {...linkProps('/optional', pathname)}>
+            <Link {...linkProps('/selected', pathname)}>
               Selected Stocks
             </Link>
           </NavigationMenu.Link>
