@@ -3,7 +3,7 @@ import {insertStocks} from '../dao/stock';
 
 export async function requestStockInfoAndSave(symbol: string): Promise<Stock[]> {
     let url = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&`+
-    `symbol=${symbol}&interval=1min&apikey=${process.env.ALPLA_VANTAGE_API_KEY}&`+
+    `symbol=${symbol}&interval=1min&apikey=${process.env.ALPHA_VANTAGE_API_KEY}&`+
     `datatype=json&outputsize=full`
 
     const res = await fetch(url, {cache: "no-cache"});

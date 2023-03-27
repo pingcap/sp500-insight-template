@@ -57,7 +57,7 @@ p {
   list-style: inside;
 }
 
-.markdown-content p {
+.markdown-content p:not(blockquote > p) {
   @apply mt-4 text-lg;
 }
 
@@ -78,4 +78,8 @@ p {
 }
 .markdown-content h6 {
   @apply mt-4;
+}
+
+.markdown-content blockquote {
+  @apply pl-4 border-l-4 bg-secondary mt-4 py-4 rounded;
 }

@@ -1,0 +1,57 @@
+# Deploy Guide
+
+This guide aimed to lead you to deploy your own S&P 500 platform. You can use it to add some self-selected stocks. And keep tracking your intrested stocks.
+
+## Create your own TiDB Cloud Serverless Tier
+
+We stored our data in TiDB Cloud Serverless Tier. If you not have a TiDB Cloud Serverless Tier yet. You definetely need to get one. For now, it's free and don't need binding a cridite card. And the whole prograss will create in less then 3 minutes (***NO KIDDING***).
+
+1. If you do not have a TiDB Cloud account, click [here](https://tidbcloud.com/free-trial) to sign up for an account. Then log in.
+2. That's it, the cluster will create automatically!
+
+## Get your cluster information
+
+1. Enter the TiDB Cloud [cluster](https://tidbcloud.com/console/clusters) page.
+2. Click the **Cluster Name**, enter the overview page of cluster.
+
+![cluster-name](/cluster-name.png)
+
+3. Click the **Connect**.
+
+![connect](/connect.png)
+
+4. Select the **Connect With** as "**General**" option, then you can see the cluster infomation.
+
+![popup-window](/popup-window.png)
+
+> **Note:**
+>
+> If you not set the password before, you can click the **Reset password** to reset password and remember it. It will never show the password anymore.
+
+## Get Alpha Vantage API Key
+
+[Alpha Vantage](https://www.alphavantage.co/) is an API supplier for get the stock data. However, this API also **NOT** a real-time API. If you want to get more infomation of this API, please read the [document of Alpha Vantage](https://www.alphavantage.co/documentation/).
+
+![alphavantage](/alphavantage.png)
+
+You can claim your API key. However, the free key has a limit:
+
+> We are pleased to provide free stock API service for our global community of users for up to 5 API requests per minute and 500 requests per day.
+>
+> ***From [Support Document of Alpha Vantage](https://www.alphavantage.co/support/#support)***
+
+## Deploy via Vercel
+
+[TBD]
+
+## Set The Parameters in Vercel
+
+You need to set two parameters:
+
+- `DATABASE_URL`: the format of this URL is `mysql://${tidb_user}:${tidb_password}@${tidb_host}:4000/sp500insight?timezone=Z&ssl={"rejectUnauthorized":true,"minVersion":"TLSv1.2"}`
+- `ALPHA_VANTAGE_API_KEY`: the API key of Alpha Vantage platform.
+
+## Run and Explore
+
+[TBD]
+
