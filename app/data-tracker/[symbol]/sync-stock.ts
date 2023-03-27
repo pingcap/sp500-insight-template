@@ -28,7 +28,7 @@ export async function requestStockInfoAndSave(symbol: string): Promise<Stock[]> 
             volume: parseFloat(value["5. volume"])
         });
     });
-    insertStocks(stocks);
+    await insertStocks(stocks);
 
     return stocks;
 }
