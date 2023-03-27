@@ -46,3 +46,36 @@ p {
 .basic-links a {
   @apply underline text-significant;
 }
+
+.markdown-content ul {
+  @apply text-lg mt-4;
+  list-style: inside;
+}
+
+.markdown-content ol {
+  @apply text-lg mt-4;
+  list-style: inside;
+}
+
+.markdown-content p {
+  @apply mt-4 text-lg;
+}
+
+.markdown-content h1 {
+  @apply mt-4;
+}
+.markdown-content h2 {
+  @apply mt-4;
+}
+.markdown-content h3 {
+  @apply mt-4;
+}
+.markdown-content h4 {
+  @apply mt-4;
+}
+.markdown-content h5 {
+  @apply mt-4;
+}
+.markdown-content h6 {
+  @apply mt-4;
+}
