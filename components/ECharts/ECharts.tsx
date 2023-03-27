@@ -51,7 +51,7 @@ const ECharts = forwardRef<EChartsType | undefined, EChartsProps>((({ theme, cla
   }, []);
 
   return (
-    <div className={clsx('echarts-container', className)} ref={celRef} {...props}>
+    <div className={clsx('echarts-container my-4', className)} ref={celRef} {...props}>
       <div ref={elRef} />
       <Overlay show={loading}>
         Loading...
