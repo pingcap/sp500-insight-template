@@ -83,3 +83,11 @@ p {
 .markdown-content blockquote {
   @apply pl-4 border-l-4 bg-secondary mt-4 py-4 rounded;
 }
+
+.markdown-content code:not(pre > code) {
+  @apply rounded bg-secondary px-2 mx-1 py-0.5;
+}
+
+.markdown-content pre {
+  @apply rounded bg-secondary p-4 mt-4 font-mono;
+}
