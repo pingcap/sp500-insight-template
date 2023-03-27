@@ -38,6 +38,13 @@ const Navigator: FC = () => {
             </Link>
           </NavigationMenu.Link>
         </NavigationMenu.Item>
+        <NavigationMenu.Item>
+          <NavigationMenu.Link asChild>
+            <Link {...linkProps('/data-tracker/blog', pathname)}>
+              Deploy
+            </Link>
+          </NavigationMenu.Link>
+        </NavigationMenu.Item>
       </NavigationMenu.List>
     </NavigationMenu.Root>
   );
