@@ -105,12 +105,12 @@ const IndexOverview: FC<{ index: string }> = ({ index }) => {
 
   useOption(() => ({
     series: {
-      color: increased ? '#DC2E2E' : '#3ed326',
+      color: increased ? '#00c800' : '#c80000',
       areaStyle: {
         color: new graphic.LinearGradient(0, 0, 0, 1, [
           {
             offset: 0.3,
-            color: increased ? '#8C181880' : '#28881780',
+            color: increased ? '#00c80080' : '#c8000080',
           },
           {
             offset: 1,
@@ -133,8 +133,8 @@ const IndexOverview: FC<{ index: string }> = ({ index }) => {
           <span className="text-significant text-5xl">
             {priceHistoryRecords[0]?.['price'] ?? latestPriceRecord?.last_1st_price}
           </span>
-          <span className={clsx(increased ? 'text-red-600' : 'text-green-600', 'text-2xl px-2')}>
-            <span className={clsx(increased ? 'bg-red-600' : 'bg-green-600', 'bg-opacity-20 rounded-xl px-2 py-1 tex')}>
+          <span className={clsx(increased ? 'text-ups' : 'text-downs', 'text-2xl px-2')}>
+            <span className={clsx(increased ? 'bg-ups' : 'bg-downs', 'bg-opacity-20 rounded-xl px-2 py-1 tex')}>
               {increased ? <ArrowUpIcon className="inline-block h-6 align-text-bottom" /> : <ArrowDownIcon className="inline-block h-6 align-text-bottom" />}{diffPercent}%
             </span>
             <span className="ml-2">

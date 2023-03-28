@@ -46,14 +46,16 @@ const StockOverview: FC<StockOverviewProps> = ({ symbol: propSymbol }) => {
 
         const { record_date, close, open, high, low } = kv;
         const num = close?.toFixed(2);
-        const pos = close > open;
+        const pos = close - open;
         const diff = Math.abs((close - open) / open * 100).toFixed(2);
+
+        const color = pos > 0 ? '#00c800' : pos < 0 ? '#c80000' : '#cccccc';
         return `
           ${record_date}
           <br/>
-          <span style="font-size: 24px; color: ${pos ? 'red' : 'green'}"><b>${num}</b> <sub>${pos ? '+' : '-'}${diff}%</sub></span>
+          <span style="font-size: 24px; color: ${color};"><b>${num}</b> <sub>${pos > 0 ? '+' : pos < 0 ? '-' : ''}${diff}%</sub></span>
           <br/>
-          Change: <b style="color: ${pos ? 'red' : 'green'}">${(close - open).toFixed(2)}</b>
+          Change: <b style="color: ${color};">${(close - open).toFixed(2)}</b>
           <br/>
           Open: <b>${open.toFixed(2)}</b>
           <br/>
@@ -86,6 +88,12 @@ const StockOverview: FC<StockOverviewProps> = ({ symbol: propSymbol }) => {
         y: ['open', 'close', 'low', 'high'],
       },
       datasetId: 'data',
+      itemStyle: {
+        color: '#00c800',
+        color0: '#c80000',
+        borderColor: '#00c800',
+        borderColor0: '#c80000',
+      },
     },
     // dataZoom: {
     //   borderColor: 'transparent',

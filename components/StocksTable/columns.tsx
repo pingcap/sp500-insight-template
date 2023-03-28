@@ -17,9 +17,9 @@ const textColor = (field: keyof StockItem) => {
   return (stock: AnyStockItem) =>
     isStockFieldResolved(stock, field)
       ? stock[field] > 0
-        ? 'text-red-600'
+        ? 'text-ups'
         : stock[field] < 0
-          ? 'text-green-600'
+          ? 'text-downs'
           : undefined
       : undefined;
 };

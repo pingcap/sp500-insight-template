@@ -94,7 +94,7 @@ export const fetchStockSummary = async (stock: UnresolvedStockItem) => {
 
 const PercentTag = ({ value }: { value: number }) => {
   return (
-    <span className={clsx('inline-flex items-center justify-end text-significant rounded px-1 min-w-[80px]', value > 0 ? 'bg-red-600' : value < 0 ? 'bg-green-600' : ' bg-[#888]')}>
+    <span className={clsx('inline-flex items-center justify-end text-significant rounded px-1 min-w-[80px]', value > 0 ? 'bg-ups' : value < 0 ? 'bg-downs' : ' bg-[#888]')}>
       {value > 0 ? <ArrowUpIcon className="inline-block h-4" /> : value < 0 ? <ArrowDownIcon className="inline-block h-4" /> : undefined}
       {Math.abs(value * 100).toFixed(2)}%
     </span>
