@@ -22,15 +22,16 @@ export interface StocksProps {
   stocks: AnyStockItem[];
   onStockInfoLoaded?: (stock: StockItem) => void;
   onStocksUpdate?: (mutate: (stocks: AnyStockItem[]) => AnyStockItem[]) => void;
+  onStockAdd?: (symbol: AnyStockItem) => void;
 }
 
-const Stocks: FC<StocksProps> = ({ className, href, userId, stocks, searchPlaceholder, loading, onStockInfoLoaded, onStocksUpdate }: StocksProps) => {
+const Stocks: FC<StocksProps> = ({ className, href, userId, stocks, searchPlaceholder, loading, onStockInfoLoaded, onStocksUpdate, onStockAdd }: StocksProps) => {
   const currentSymbol = useSelectedLayoutSegment();
 
   const [filterTriggered, setFilterTriggered] = useState(false);
   const [filter, setFilter] = useState('');
 
-  const { hasOperations, onAdd, ...operations } = useStockOperations(userId, onStocksUpdate ?? (() => undefined));
+  const { hasOperations, onAdd, ...operations } = useStockOperations(userId, onStocksUpdate ?? (() => undefined), onStockAdd ?? (() => undefined));
 
   const { data: all = [], isLoading } = useComposedEndpoint((go) => go ? [endpoints.index.compositions.GET, { index_symbol: 'SP500' }] : undefined, filterTriggered && hasOperations);
 
@@ -93,7 +94,7 @@ Stocks.displayName = 'Stocks';
 
 export default Stocks;
 
-function useStockOperations (userId: number | undefined, setStocks: (mutate: (stocks: AnyStockItem[]) => AnyStockItem[]) => void) {
+function useStockOperations (userId: number | undefined, setStocks: (mutate: (stocks: AnyStockItem[]) => AnyStockItem[]) => void, onAdd: (stock: AnyStockItem) => void) {
   const remove = useCallback((stockSymbol: string) => {
     const stocks = stocksStore.get();
     if (stocks.includes(stockSymbol)) {
@@ -110,6 +111,7 @@ function useStockOperations (userId: number | undefined, setStocks: (mutate: (st
     }
     stocksStore.set(stocks);
     setStocks((stocks) => [stock, ...stocks]);
+    onAdd(stock)
   }, []);
 
   if (typeof userId === 'number' && isFinite(userId)) {

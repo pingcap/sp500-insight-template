@@ -4,11 +4,12 @@ import CommonToggleGroup from '@/components/ToggleGroup';
 interface DurationToggleGroupProps {
   value?: string | null;
   onChange?: (value: string) => void;
+  hasRealtime?: boolean;
 }
 
-const DurationToggleGroup: FC<DurationToggleGroupProps> = ({ value, onChange }) => {
+const DurationToggleGroup: FC<DurationToggleGroupProps> = ({ value, onChange, hasRealtime = false }) => {
   return (
-    <CommonToggleGroup value={value} onChange={onChange} options={DURATIONS} label="Duration" />
+    <CommonToggleGroup value={value} onChange={onChange} options={hasRealtime ? DURATION_WITH_REALTIME : DURATIONS} label="Duration" />
   );
 };
 
@@ -44,5 +45,10 @@ const DURATIONS: Duration[] = [
   {
     name: 'MAX',
   }];
+
+const DURATION_WITH_REALTIME: Duration[] = [
+  { name: 'Realtime' },
+  ...DURATIONS,
+]
 
 export default DurationToggleGroup;

@@ -17,7 +17,9 @@ export interface Symbol {
 }
 
 function getConnection (): Promise<Connection> {
-  return createConnection(process.env.DATABASE_URL || 'mysql://root:@localhost:4000/sp500insight');
+  return createConnection({
+    uri: process.env.DATABASE_URL || 'mysql://root:@localhost:4000/sp500insight'
+  });
 }
 
 export async function withAutoreleaseConnection<T> (run: (conn: Connection) => Promise<T>, hasTransaction = false): Promise<T> {

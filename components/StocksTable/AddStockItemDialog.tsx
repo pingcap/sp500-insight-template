@@ -9,9 +9,10 @@ interface AddStockItemDialogProps {
   stocks: AnyStockItem[];
   onInfoLoad?: (stock: StockItem) => void;
   onChange?: (mutate: (stocks: AnyStockItem[]) => AnyStockItem[]) => void;
+  onAdd?: (stock: AnyStockItem) => void;
 }
 
-const AddStockItemDialog: FC<AddStockItemDialogProps> = ({ stocks, onInfoLoad, onChange }) => {
+const AddStockItemDialog: FC<AddStockItemDialogProps> = ({ stocks, onInfoLoad, onChange, onAdd }) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -25,7 +26,7 @@ const AddStockItemDialog: FC<AddStockItemDialogProps> = ({ stocks, onInfoLoad, o
           <Dialog.Title className="dialog-title">
             New Collection
           </Dialog.Title>
-          <Stocks className="h-[70vh]" stocks={stocks} onStockInfoLoaded={onInfoLoad} onStocksUpdate={onChange} userId={1} />
+          <Stocks className="h-[70vh]" stocks={stocks} onStockInfoLoaded={onInfoLoad} onStocksUpdate={onChange} onStockAdd={onAdd} userId={1} />
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>

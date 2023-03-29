@@ -15,10 +15,11 @@ export interface StocksTableProps {
   stocks: AnyStockItem[];
   onInfoLoad?: (stock: StockItem) => void;
   onChange?: (mutate: (stocks: AnyStockItem[]) => AnyStockItem[]) => void;
+  onAdd?: (stock: AnyStockItem) => void;
   stickyColumns?: number;
 }
 
-const StocksTable: FC<StocksTableProps> = ({ className, stocks, stickyColumns = 2, onInfoLoad, onChange }) => {
+const StocksTable: FC<StocksTableProps> = ({ className, stocks, stickyColumns = 2, onInfoLoad, onChange , onAdd }) => {
   const { colRefs, widths } = useColumnWidths();
   const [orderedField, setOrderedField] = useState<string>();
   const [order, setOrder] = useState<'ASC' | 'DESC'>('ASC');
@@ -82,10 +83,11 @@ const StocksTable: FC<StocksTableProps> = ({ className, stocks, stickyColumns = 
           columnsOffsetLeft={columnsOffsetLeft}
           stickyColumns={stickyColumns}
           lastLine={
-            onChange && (<AddStockItemDialog
+            (onChange || onAdd) && (<AddStockItemDialog
               stocks={stocks}
               onInfoLoad={onInfoLoad}
               onChange={onChange}
+              onAdd={onAdd}
             />)
           }
         />
