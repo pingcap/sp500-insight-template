@@ -18,7 +18,7 @@ interface StockOverviewProps {
 const StockOverview: FC<StockOverviewProps> = ({ symbol: propSymbol }) => {
   const symbol = useSelectedLayoutSegment() ?? propSymbol;
   const { ref, useOption } = useECharts();
-  const [duration, setDuration] = useSearchParam('duration');
+  const [duration = '6M', setDuration] = useSearchParam('duration');
   const { data: summary } = useEndpoint(endpoints.stock.summary.GET, symbol ? { stock_symbol: symbol } : undefined);
   const { data = [], isLoading } = useComposedEndpoint(historyPriceEndpoint, {
     date_now: summary?.last_change_day,
@@ -186,17 +186,18 @@ const StockOverview: FC<StockOverviewProps> = ({ symbol: propSymbol }) => {
       bottom: duration === 'Realtime' ? 64 : 24,
     },
     xAxis: {
+      type: 'category',
       axisLabel: {
         showMinLabel: true,
-        formatter: (value: any, index: number) => {
+        formatter: duration === 'Realtime' ? (value: any, index: number) => {
           if (index === 0) {
             return dateDtf.format(new Date(value));
           }
           return timeDtf.format(new Date(value));
-        },
+        } : null,
       },
     },
-  }), [duration === 'Realtime']);
+  }), { replaceMerge: ['grid'] }, [duration === 'Realtime']);
 
   return (
     <>
@@ -205,7 +206,7 @@ const StockOverview: FC<StockOverviewProps> = ({ symbol: propSymbol }) => {
         <tr></tr>
         </tbody>
       </table>
-      <DurationToggleGroup value={duration} onChange={setDuration} hasRealtime={isTracking} />
+      <DurationToggleGroup value={duration ?? '6M'} onChange={setDuration} hasRealtime={isTracking} />
       <ECharts ref={ref} className="aspect-[20/5]" loading={isRealtimeLoading || isLoading} />
     </>
   );
