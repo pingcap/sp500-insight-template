@@ -7,6 +7,10 @@ html, body {
   font-size: 14px;
 }
 
+body {
+  @apply mx-2 md:mx-4;
+}
+
 .page {
   @apply pt-4;
 }

@@ -8,8 +8,8 @@ const Navigator: FC = () => {
   const pathname = usePathname();
 
   return (
-    <NavigationMenu.Root className="max-w-[960px] mx-auto sticky top-0 z-20 bg-primary p-2 h-12 my-2">
-      <NavigationMenu.List className="flex items-center text-xl gap-8 text-primary">
+    <NavigationMenu.Root className="max-w-[960px] mx-auto sticky top-0 z-20 bg-primary p-2 md:h-12 my-2">
+      <NavigationMenu.List className="flex flex-wrap items-center text-xl gap-x-8 gap-y-2 text-primary">
         <NavigationMenu.Item>
           <NavigationMenu.Link asChild>
             <Link {...linkProps('/SP500', pathname)}>
