@@ -1,6 +1,18 @@
 import IndexOverview from "@/charts/IndexOverview";
 
-# S&P500 Index
+<h1 id='index'>S&P500 Index</h1>
+
+> The data is **NOT** updating in realtime, resulting in the data not being accurate.
+
+The **Standard and Poor's 500**, or simply the **S&P 500**, is a
+[stock market index](https://en.wikipedia.org/wiki/Stock_market_index)
+tracking the stock performance of 500 large companies listed on
+[stock exchanges](https://en.wikipedia.org/wiki/Stock_exchange)
+in the United States. It is one of the most commonly followed equity indices. You can view the
+changes in the following S&P 500 Index by selecting a time frame ranging from 7 days (7D) to MAX.
+
+<IndexOverview index={props.index} />
+
 ## Overview
 
 This is a stock analysis demo that uses [TiDB Serverless](https://tidbcloud.com/) and [TiDB Cloud Data Service](https://docs.pingcap.com/tidbcloud/data-service-overview).
@@ -15,13 +27,3 @@ In this demo, you can see the following features:
 - [Proportional distribution of exchanges](/SP500/constituents#exchanges)
 - Detailed information of stocks, including candle-stick chart over the past decade
 
-<h2 id='index'>S&P500 Index</h2>
-
-The **Standard and Poor's 500**, or simply the **S&P 500**, is a
-[stock market index](https://en.wikipedia.org/wiki/Stock_market_index)
-tracking the stock performance of 500 large companies listed on
-[stock exchanges](https://en.wikipedia.org/wiki/Stock_exchange)
-in the United States. It is one of the most commonly followed equity indices. You can view the
-changes in the following S&P 500 Index by selecting a time frame ranging from 7 days (7D) to MAX.
-
-<IndexOverview index={props.index} />
