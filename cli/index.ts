@@ -149,8 +149,8 @@ async function importCompanies(conn: Connection, logger: Logger) {
         companies = [];
         await insertCompanies(conn, logger, values);
         await insertIndexCompositions(conn, logger, SP500_INDEX_SYMBOL, values);
-        logger.info(`All companies imported to DB.`);
       }
+      logger.info(`All companies imported to DB.`);
     });
 }
 
