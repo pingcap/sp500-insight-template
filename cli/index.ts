@@ -144,10 +144,12 @@ async function importCompanies(conn: Connection, logger: Logger) {
       }
     })
     .on('end', async () => {
-      const values = companies.slice(0);
-      companies = [];
-      await insertCompanies(conn, logger, values);
-      await insertIndexCompositions(conn, logger, SP500_INDEX_SYMBOL, values);
+      if (companies.length > 0) {
+        const values = companies.slice(0);
+        companies = [];
+        await insertCompanies(conn, logger, values);
+        await insertIndexCompositions(conn, logger, SP500_INDEX_SYMBOL, values);
+      }
       logger.info(`All companies imported to DB.`);
     });
 }
@@ -234,9 +236,11 @@ async function importIndexPriceHistory(conn: Connection, logger: Logger) {
       }
     })
     .on('end', async () => {
-      const values = indexPrices.slice(0);
-      indexPrices = [];
-      await insertIndexPrices(conn, logger, values);
+      if (indexPrices.length > 0) {
+        const values = indexPrices.slice(0);
+        indexPrices = [];
+        await insertIndexPrices(conn, logger, values);
+      }
       logger.info(`All index prices imported to DB.`);
     });
 }
@@ -281,9 +285,11 @@ async function importStockPriceHistory(conn: Connection, logger: Logger) {
       }
     })
     .on('end', async () => {
-      const values = indexPrices.slice(0);
-      indexPrices = [];
-      await insertStockPrices(conn, logger, values);
+      if (indexPrices.length > 0) {
+        const values = indexPrices.slice(0);
+        indexPrices = [];
+        await insertStockPrices(conn, logger, values);
+      }
       logger.info(`All stock prices imported to DB.`);
     });
 }
