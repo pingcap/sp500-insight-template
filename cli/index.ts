@@ -144,11 +144,13 @@ async function importCompanies(conn: Connection, logger: Logger) {
       }
     })
     .on('end', async () => {
-      const values = companies.slice(0);
-      companies = [];
-      await insertCompanies(conn, logger, values);
-      await insertIndexCompositions(conn, logger, SP500_INDEX_SYMBOL, values);
-      logger.info(`All companies imported to DB.`);
+      if (companies.length > 0) {
+        const values = companies.slice(0);
+        companies = [];
+        await insertCompanies(conn, logger, values);
+        await insertIndexCompositions(conn, logger, SP500_INDEX_SYMBOL, values);
+        logger.info(`All companies imported to DB.`);
+      }
     });
 }
 
