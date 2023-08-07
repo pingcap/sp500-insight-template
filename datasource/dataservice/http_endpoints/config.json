@@ -1,0 +1,454 @@
+[
+  {
+    "name": "index/history_price/now",
+    "description": "",
+    "method": "GET",
+    "endpoint": "/index/history_price/now",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [],
+    "settings": {
+      "timeout": 5000,
+      "row_limit": 50
+    },
+    "tag": "",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-index-history_price-now.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/index/compositions",
+    "description": "",
+    "method": "GET",
+    "endpoint": "/index/compositions",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "index_symbol",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 5000,
+      "row_limit": 1000
+    },
+    "tag": "",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-index-compositions.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/index/compositions/exchange_dis",
+    "description": "",
+    "method": "GET",
+    "endpoint": "/index/compositions/exchange_distribution",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "index_symbol",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 5000,
+      "row_limit": 50
+    },
+    "tag": "",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-index-compositions-exchange_distribution.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/index/composition/country_distribution",
+    "description": "",
+    "method": "GET",
+    "endpoint": "/index/compositions/country_distribution",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "index_symbol",
+        "type": "string",
+        "required": 0,
+        "default": "",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 5000,
+      "row_limit": 50
+    },
+    "tag": "",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-index-compositions-country_distribution.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/index/sector____distribution",
+    "description": "",
+    "method": "GET",
+    "endpoint": "/index/sector_industry_distribution",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "index_symbol",
+        "type": "string",
+        "required": 0,
+        "default": "",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 5000,
+      "row_limit": 1000
+    },
+    "tag": "",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-index-sector_industry_distribution.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/stock/summary",
+    "description": "",
+    "method": "GET",
+    "endpoint": "/stock/summary",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "stock_symbol",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 5000,
+      "row_limit": 50
+    },
+    "tag": "",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-stock-summary.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/stock/history_price/daily",
+    "description": "",
+    "method": "GET",
+    "endpoint": "/stock/history_price/daily",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "start_date",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "end_date",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "stock_symbol",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 5000,
+      "row_limit": 2000
+    },
+    "tag": "",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-stock-history_price-daily.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "index/history_price/weekly",
+    "description": "",
+    "method": "GET",
+    "endpoint": "/index/history_price/weekly",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "start_date",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "end_date",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "index_symbol",
+        "type": "string",
+        "required": 0,
+        "default": "",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 5000,
+      "row_limit": 2000
+    },
+    "tag": "",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-index-history_price-weekly.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "index/history_price/daily",
+    "description": "",
+    "method": "GET",
+    "endpoint": "/index/history_price/daily",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "start_date",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "end_date",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "index_symbol",
+        "type": "string",
+        "required": 0,
+        "default": "",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 5000,
+      "row_limit": 2000
+    },
+    "tag": "",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-index-history_price-daily.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/index/latest_price",
+    "description": "",
+    "method": "GET",
+    "endpoint": "/index/latest_price",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "index_symbol",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 5000,
+      "row_limit": 50
+    },
+    "tag": "",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-index-latest_price.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/stock/info",
+    "description": "",
+    "method": "GET",
+    "endpoint": "/stock/info",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "stock_symbol",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 5000,
+      "row_limit": 50
+    },
+    "tag": "",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-stock-info.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/stock/history_price/weekly_copy",
+    "description": "",
+    "method": "GET",
+    "endpoint": "/stock/history_price/weekly",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "start_date",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "end_date",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "stock_symbol",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 5000,
+      "row_limit": 2000
+    },
+    "tag": "",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-stock-history_price-weekly.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/index/sector_ranking",
+    "description": "",
+    "method": "GET",
+    "endpoint": "/index/sector_ranking",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "index_symbol",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 5000,
+      "row_limit": 50
+    },
+    "tag": "",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-index-sector_ranking.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/index/compositions_by_sector",
+    "description": "",
+    "method": "GET",
+    "endpoint": "/index/compositions_by_sector",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "index_symbol",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "sector",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 5000,
+      "row_limit": 1000
+    },
+    "tag": "",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-index-compositions_by_sector.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/sectors",
+    "description": "",
+    "method": "GET",
+    "endpoint": "/sectors",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [],
+    "settings": {
+      "timeout": 5000,
+      "row_limit": 50
+    },
+    "tag": "",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-sectors.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  }
+]
