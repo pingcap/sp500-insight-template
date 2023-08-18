@@ -11,6 +11,7 @@ const defaultDBOptions: ConnectionOptions = {
   host: 'localhost',
   database: 'sp500insight',
   ssl: {
+    minVersion: 'TLSv1.2',
     rejectUnauthorized: true
   }
 };
@@ -68,9 +69,18 @@ program.parse();
 
 // Connect to the database.
 async function createDBConnection (ignoreUseDB: boolean = false): Promise<[Connection, string]> {
+  const { TIDB_HOST, TIDB_PORT, TIDB_USER, TIDB_PASSWORD } = process.env;
+
+  let databaseUrl: string | undefined;
+  if (TIDB_HOST && TIDB_PORT && TIDB_USER && TIDB_PASSWORD) {
+    databaseUrl = `mysql://${TIDB_USER}:${encodeURIComponent(TIDB_PASSWORD)}@${TIDB_HOST}:${TIDB_PORT}/sp500insight?timezone=Z`
+  } else {
+    databaseUrl = process.env.DATABASE_URL;
+  }
+
   const dbOptions: ConnectionOptions = {
     ...defaultDBOptions,
-    ...convertURLToOptions(process.env.DATABASE_URL)
+    ...convertURLToOptions(databaseUrl)
   }
   const database = dbOptions.database;
   const conn = await createConnection({
