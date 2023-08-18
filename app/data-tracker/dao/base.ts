@@ -18,20 +18,25 @@ export interface Symbol {
 
 function getConnection (): Promise<Connection> {
   const { TIDB_HOST, TIDB_PORT, TIDB_USER, TIDB_PASSWORD } = process.env;
+  const opt: any = {}
 
-  let databaseUrl: string | undefined;
   if (TIDB_HOST && TIDB_PORT && TIDB_USER && TIDB_PASSWORD) {
-    databaseUrl = `mysql://${TIDB_USER}:${encodeURIComponent(TIDB_PASSWORD)}@${TIDB_HOST}:${TIDB_PORT}/sp500insight?timezone=Z`
+    opt.user = TIDB_USER;
+    opt.host = TIDB_HOST;
+    opt.password = TIDB_PASSWORD;
+    opt.port = parseInt(TIDB_PORT);
+    opt.database = 'sp500insight';
   } else {
-    databaseUrl = process.env.DATABASE_URL;
+    opt.uri = process.env.DATABASE_URL || 'mysql://root:@localhost:4000/sp500insight';
   }
 
   return createConnection({
-    uri: databaseUrl || 'mysql://root:@localhost:4000/sp500insight',
+    ...opt,
     ssl: {
       minVersion: 'TLSv1.2',
       rejectUnauthorized: true
-    }
+    },
+    timezone: 'Z',
   });
 }
 
