@@ -1,3 +1,4 @@
+use sp500insight;
 
 SELECT record_date, low, high, open, close, adj_close
 FROM stock_price_history
